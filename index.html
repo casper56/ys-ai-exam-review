@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 人工智慧應用與程式開發歷屆甄試複習系統</title>
+    <meta name="description" content="幼獅歷屆甄試筆試考古題複習系統（113、114、115年度），提供平常練習、分年模擬考、總模擬考，以及易錯題標記持久化功能。">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern CSS Reset & Variable Definitions */
+        :root {
+            /* Light Theme Variables */
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --text-muted: #6c757d;
+            --card-bg: #ffffff;
+            --card-bg-secondary: #f1f3f5;
+            --border-color: #dee2e6;
+            --primary-color: #0d6efd;
+            --primary-hover: #0b5ed7;
+            --orange-flag: #fd7e14;
+            --soft-flag-bg: #fff3cd;
+            --soft-flag-border: #ffeeba;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --nav-bg: #ffffff;
+            --accent-color: #198754;
+            --body-font: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+            --title-font: 'Outfit', 'Noto Sans TC', system-ui, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            /* Premium Dark Theme Variables */
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: #1e293b;
+            --card-bg-secondary: #334155;
+            --border-color: #334155;
+            --primary-color: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --orange-flag: #f97316;
+            --soft-flag-bg: #451a03;
+            --soft-flag-border: #7c2d12;
+            --nav-bg: #1e293b;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="sepia"] {
+            /* Eye-protection Sepia Theme Variables */
+            --bg-color: #f4ecd8;
+            --text-color: #5b4636;
+            --text-muted: #8c7355;
+            --card-bg: #fdf6e3;
+            --card-bg-secondary: #eee8d5;
+            --border-color: #dacfb9;
+            --primary-color: #b58900;
+            --primary-hover: #cb4b16;
+            --orange-flag: #cb4b16;
+            --soft-flag-bg: #fdf6e3;
+            --soft-flag-border: #dacfb9;
+            --nav-bg: #fdf6e3;
+            --shadow-sm: 0 2px 4px rgba(91,70,54,0.05);
+            --shadow-md: 0 4px 12px rgba(91,70,54,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--body-font);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding-bottom: 60px;
+        }
+
+        /* V3.4 Layout Container Specification */
+        .main-container {
+            width: calc(100% - 60px);
+            margin: 20px auto;
+            max-width: none;
+        }
+
+        /* Header & Navigation styling */
+        header {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 25px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title-section h1 {
+            font-family: var(--title-font);
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--orange-flag));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .header-title-section p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .theme-btn {
+            background-color: var(--card-bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .theme-btn.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 5px;
+            background-color: var(--card-bg-secondary);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab-btn:hover {
+            color: var(--text-color);
+        }
+
+        .nav-tab-btn.active {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-and-filter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-grow: 1;
+            max-width: 500px;
+            justify-content: flex-end;
+        }
+
+        .search-bar-container {
+            position: relative;
+            flex-grow: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 35px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            fill: var(--text-muted);
+            width: 16px;
+            height: 16px;
+        }
+
+        .filter-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-btn.active {
+            background-color: var(--soft-flag-bg);
+            border-color: var(--orange-flag);
+            color: var(--orange-flag);
+            font-weight: 600;
+        }
+
+        .flagged-counter-badge {
+            background-color: var(--orange-flag);
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Practice Mode Views */
+        .practice-year-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .year-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 700;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .year-tab-btn:hover {
+            color: var(--text-color);
+        }
+
+        .year-tab-btn.active {
+            color: var(--primary-color);
+        }
+
+        .year-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .sub-category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .sub-tab-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sub-tab-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .sub-tab-btn.active {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        /* Question Cards Layout */
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        .question-card.flagged {
+            border-color: var(--orange-flag) !important;
+            box-shadow: 0 0 0 1px var(--orange-flag), var(--shadow-sm);
+        }
+
+        /* Flag element styling */
+        .flag-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .flag-btn:hover {
+            background-color: var(--card-bg-secondary);
+        }
+
+        .flag-icon {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: var(--text-muted);
+            stroke-width: 2;
+            transition: all 0.2s ease;
+        }
+
+        .question-card.flagged .flag-icon {
+            fill: var(--orange-flag);
+            stroke: var(--orange-flag);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .question-num-badge {
+            background-color: var(--card-bg-secondary);
+            color: var(--text-color);
+            font-family: var(--title-font);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+            margin-top: 2px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-color);
+            flex-grow: 1;
+            word-break: break-word;
+        }
+
+        .easy-wrong-label {
+            display: none;
+            background-color: var(--orange-flag);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+        .question-card.flagged .easy-wrong-label {
+            display: inline-block;
+        }
+
+        /* Premium Code block styling - Strict anti-pink rule */
+        pre {
+            background-color: #1e293b !important;
+            color: #e2e8f0 !important;
+            border: 1px solid #334155 !important;
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+            display: block;
+        }
+
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: none !important;
+            color: inherit !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+
+        /* SVG drawings container */
+        .diagram-container {
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        /* 2-column Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-button {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .option-button:hover {
+            border-color: var(--primary-color);
+            background-color: var(--card-bg-secondary);
+        }
+
+        .option-letter {
+            width: 24px;
+            height: 24px;
+            background-color: var(--card-bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--title-font);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-color);
+            flex-shrink: 0;
+        }
+
+        /* Selected option in exam mode */
+        .option-button.selected {
+            background-color: rgba(13, 110, 253, 0.08);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .option-button.selected .option-letter {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        /* Correct/Incorrect option styling during review & practice selection */
+        .option-button.correct {
+            background-color: rgba(25, 135, 84, 0.08) !important;
+            border-color: #198754 !important;
+        }
+
+        .option-button.correct .option-letter {
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+            color: #ffffff !important;
+        }
+
+        .option-button.wrong {
+            background-color: rgba(220, 53, 69, 0.08) !important;
+            border-color: #dc3545 !important;
+        }
+
+        .option-button.wrong .option-letter {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: #ffffff !important;
+        }
+
+        /* Masked Answer Bar - STRICT COMPLIANCE */
+        .correct-answer-bar {
+            background-color: #ffffff !important;
+            color: #ffffff !important;
+            border-left: 5px solid #198754 !important;
+            padding: 10px 15px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            user-select: all;
+            border-top: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 0 6px 6px 0;
+            transition: color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .correct-answer-bar:hover {
+            color: #198754 !important;
+        }
+
+        .correct-answer-bar::selection {
+            background-color: #198754 !important;
+            color: #ffffff !important;
+        }
+
+        /* Exam View Elements */
+        .exam-setup-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            max-width: 600px;
+            margin: 40px auto;
+            transition: all 0.3s ease;
+        }
+
+        .exam-setup-container h2 {
+            font-family: var(--title-font);
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .exam-setup-container p {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .exam-options-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+            text-align: left;
+            background-color: var(--card-bg-secondary);
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .start-exam-btn {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .start-exam-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .exam-mode-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .exam-selection-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px 25px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .exam-selection-card:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .exam-selection-card.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+
+        /* Floating Exam Status Bar */
+        .exam-status-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 30px;
+            right: 30px;
+            background-color: var(--card-bg);
+            border: 1.5px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 12px 25px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .exam-timer {
+            font-family: var(--title-font);
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .exam-progress {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .submit-exam-btn {
+            background-color: #198754;
+            color: #ffffff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .submit-exam-btn:hover {
+            background-color: #157347;
+        }
+
+        /* Results Screen */
+        .results-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 35px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .results-score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 8px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+
+        .score-val {
+            font-family: var(--title-font);
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .score-lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .results-details {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            background-color: var(--card-bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .detail-item h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .detail-item p {
+            font-family: var(--title-font);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-color);
+        }
+
+        .no-results-placeholder {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+        }
+
+        /* SVG Utility Icons */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+        }
+
+        /* Collapsible Study Progress Sidebar Drawer - Glassmorphism & High-end UX */
+        .sidebar-drawer {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border-right: 1px solid var(--border-color);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
+            z-index: 1100;
+            transform: translateX(-280px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 20px;
+            box-sizing: border-box;
+        }
+
+        [data-theme="dark"] .sidebar-drawer {
+            background: rgba(15, 23, 42, 0.85);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="sepia"] .sidebar-drawer {
+            background: rgba(244, 236, 216, 0.9);
+            box-shadow: 4px 0 24px rgba(91, 70, 54, 0.12);
+        }
+
+        .sidebar-drawer.expanded {
+            transform: translateX(0);
+        }
+
+        /* Pull-out toggle pull bar on the right edge of sidebar */
+        .sidebar-pull-tab {
+            position: absolute;
+            left: 280px;
+            top: 120px;
+            width: 32px;
+            height: 80px;
+            background: var(--primary-color);
+            color: #ffffff;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1101;
+            transition: background-color 0.2s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-pull-tab:hover {
+            background: var(--primary-hover);
+        }
+
+        .sidebar-pull-tab svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        /* Sidebar Title and Header details */
+        .sidebar-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .sidebar-title {
+            font-family: var(--title-font);
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Stats dashboard section */
+        .sidebar-stats {
+            background: var(--card-bg-secondary);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .sidebar-stat-item {
+            text-align: center;
+        }
+
+        .sidebar-stat-val {
+            font-family: var(--title-font);
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-color);
+        }
+
+        .sidebar-stat-lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Legend item symbols */
+        .sidebar-legend {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px dashed var(--border-color);
+        }
+
+        [data-theme="dark"] .sidebar-legend {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Progress grid layout containing badges */
+        .sidebar-grid-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-right: -10px;
+            padding-right: 10px;
+        }
+
+        .sidebar-progress-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sidebar-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding-bottom: 10px;
+        }
+
+        /* Circular dynamic indicator buttons */
+        .progress-dot {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-family: var(--title-font);
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .progress-dot:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Colors for different answered states */
+        .progress-dot.status-correct {
+            background-color: rgba(25, 135, 84, 0.15) !important;
+            border-color: #198754 !important;
+            color: #198754 !important;
+        }
+
+        .progress-dot.status-wrong {
+            background-color: rgba(220, 53, 69, 0.15) !important;
+            border-color: #dc3545 !important;
+            color: #dc3545 !important;
+        }
+
+        .progress-dot.status-corrected {
+            background-color: rgba(253, 126, 20, 0.15) !important;
+            border-color: #fd7e14 !important;
+            color: #fd7e14 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Collapsible Study Progress Sidebar Drawer -->
+    <aside class="sidebar-drawer" id="study-sidebar">
+        <!-- Pull tab toggle handler -->
+        <div class="sidebar-pull-tab" id="sidebar-toggle" onclick="toggleSidebar()" title="展開/收合 學習進度選單">
+            <svg id="pull-tab-arrow" viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/></svg>
+        </div>
+
+        <div class="sidebar-header">
+            <div class="sidebar-title">
+                📊 學習進度與導覽
+            </div>
+            <div class="sidebar-subtitle">
+                平常練習狀態追蹤與定位跳轉
+            </div>
+        </div>
+
+        <!-- Progress stats dashboard -->
+        <div class="sidebar-stats">
+            <div class="sidebar-stat-item">
+                <div class="sidebar-stat-val" id="stat-progress">0%</div>
+                <div class="sidebar-stat-lbl">完成度</div>
+            </div>
+            <div class="sidebar-stat-item">
+                <div class="sidebar-stat-val" id="stat-correct">0</div>
+                <div class="sidebar-stat-lbl">答對題數</div>
+            </div>
+            <div class="sidebar-stat-item">
+                <div class="sidebar-stat-val" id="stat-wrong">0</div>
+                <div class="sidebar-stat-lbl">答錯過</div>
+            </div>
+            <div class="sidebar-stat-item">
+                <div class="sidebar-stat-val" id="stat-total">0/50</div>
+                <div class="sidebar-stat-lbl">目前題量</div>
+            </div>
+        </div>
+
+        <!-- Interactive Legend -->
+        <div class="sidebar-legend">
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #198754;"></span>
+                <span>🟩 答對</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #dc3545;"></span>
+                <span>🟥 答錯</span>
+            </div>
+            <div class="legend-item" style="grid-column: span 2;">
+                <span class="legend-color" style="background-color: #fd7e14;"></span>
+                <span>🟧 已改正 (重作答對)</span>
+            </div>
+        </div>
+
+        <!-- Question badges scroll grid container -->
+        <div class="sidebar-grid-container">
+            <div class="sidebar-progress-title">
+                <span>題目導覽面板</span>
+                <span id="sidebar-year-label">113 年度</span>
+            </div>
+            <div class="sidebar-grid" id="sidebar-badges-grid">
+                <!-- Dynamically filled with buttons -->
+            </div>
+        </div>
+    </aside>
+
+    <!-- Header Block -->
+    <header>
+        <div class="main-container header-content">
+            <div class="header-title-section">
+                <h1>AI 考古題複習系統</h1>
+                <p>智力測驗 25 題、專業科目 25 題 • 113年 - 115年幼獅甄試考古題庫</p>
+            </div>
+            <!-- Theme selectors -->
+            <div class="theme-selector">
+                <button class="theme-btn active" onclick="setTheme('light')" id="theme-btn-light">
+                    <svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l2.121-2.122 2.122 2.122-2.122 2.121-2.121-2.121zm14.142 14.142l2.121-2.12 2.122 2.121-2.122 2.122-2.121-2.123zM1 11h3v2H1v-2zm19 0h3v2h-3v-2zM4.929 20.485l-2.122-2.121 2.122-2.122 2.121 2.122-2.121 2.121zm14.142-14.142l-2.121-2.121 2.122-2.122 2.121 2.122-2.122 2.121z" fill="currentColor"/></svg>
+                    亮色
+                </button>
+                <button class="theme-btn" onclick="setTheme('dark')" id="theme-btn-dark">
+                    <svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.385 5.385 0 0 1-5.48-5.48 9.07 9.07 0 0 0-3.42-.16zm0-2a11 11 0 1 1 0 22 11 11 0 0 1 0-22z" fill="currentColor"/></svg>
+                    深色
+                </button>
+                <button class="theme-btn" onclick="setTheme('sepia')" id="theme-btn-sepia">
+                    <svg class="icon" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="currentColor"/></svg>
+                    護眼
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content Block -->
+    <main class="main-container">
+        
+        <!-- Control Panel -->
+        <section class="control-panel">
+            <!-- Mode Switch Tabs -->
+            <div class="tab-navigation">
+                <button class="nav-tab-btn active" onclick="switchView('practice')" id="nav-tab-practice">平常練習區</button>
+                <button class="nav-tab-btn" onclick="switchView('exam')" id="nav-tab-exam">模擬考區</button>
+                <button class="nav-tab-btn" onclick="switchView('overall')" id="nav-tab-overall">總模擬考</button>
+            </div>
+            
+            <!-- Filters & Search -->
+            <div class="search-and-filter">
+                <!-- Search bar -->
+                <div class="search-bar-container" id="global-search-container">
+                    <input type="text" class="search-input" id="search-bar" placeholder="關鍵字搜尋題目或選項..." oninput="handleSearch()">
+                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </div>
+                <!-- Flagged Filter Button -->
+                <button class="filter-btn" id="filter-flagged-btn" onclick="toggleFlaggedFilter()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+                    已標記
+                    <span class="flagged-counter-badge" id="flagged-count">0</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- PRACTICE MODE SECTION -->
+        <section id="view-practice" class="view-section">
+            <!-- Year select tabs -->
+            <div class="practice-year-nav">
+                <button class="year-tab-btn active" onclick="switchPracticeYear(113)" id="year-tab-113">113 年度</button>
+                <button class="year-tab-btn" onclick="switchPracticeYear(114)" id="year-tab-114">114 年度</button>
+                <button class="year-tab-btn" onclick="switchPracticeYear(115)" id="year-tab-115">115 年度</button>
+            </div>
+            
+            <!-- Category select tabs -->
+            <div class="sub-category-tabs">
+                <button class="sub-tab-btn active" onclick="switchPracticeCategory('all')" id="cat-tab-all">全部項目</button>
+                <button class="sub-tab-btn" onclick="switchPracticeCategory('intelligence')" id="cat-tab-intelligence">智力測驗 (1-25)</button>
+                <button class="sub-tab-btn" onclick="switchPracticeCategory('professional')" id="cat-tab-professional">專業試題 (26-50)</button>
+            </div>
+
+            <!-- Practice list container -->
+            <div class="questions-list" id="practice-questions-list"></div>
+        </section>
+
+        <!-- EXAM MODE SECTION (分年模擬考區) -->
+        <section id="view-exam" class="view-section" style="display: none;">
+            <!-- Year select interface -->
+            <div id="exam-setup-view">
+                <div class="exam-setup-container">
+                    <h2>分年模擬測驗</h2>
+                    <p>選擇一個年度的考卷進行全真模擬考試，每次出題包含 25 題智力測驗與 25 題專業試題，總計 50 題。</p>
+                    
+                    <div class="exam-mode-nav">
+                        <button class="exam-selection-card active" onclick="selectExamYear(113)" id="exam-card-113">113 年度模擬考</button>
+                        <button class="exam-selection-card" onclick="selectExamYear(114)" id="exam-card-114">114 年度模擬考</button>
+                        <button class="exam-selection-card" onclick="selectExamYear(115)" id="exam-card-115">115 年度模擬考</button>
+                    </div>
+
+                    <div class="exam-options-panel">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="exam-shuffle-options" checked>
+                            打亂選項順序 (避免記住 (A)(B)(C)(D) 選項位置)
+                        </label>
+                    </div>
+
+                    <button class="start-exam-btn" onclick="startExam()">開始模擬考</button>
+                </div>
+            </div>
+
+            <!-- Exam in progress interface -->
+            <div id="exam-progress-view" style="display: none;">
+                <div class="questions-list" id="exam-questions-list"></div>
+            </div>
+
+            <!-- Exam results interface -->
+            <div id="exam-results-view" style="display: none;"></div>
+        </section>
+
+        <!-- OVERALL MOCK EXAM SECTION (總模擬考) -->
+        <section id="view-overall" class="view-section" style="display: none;">
+            <div id="overall-setup-view">
+                <div class="exam-setup-container" style="border-color: var(--orange-flag);">
+                    <h2 style="color: var(--orange-flag);">總模擬測驗 (Overall Exam)</h2>
+                    <p>全年度混合大考！系統將隨機自 113、114、115 三個年度共 150 題庫中，嚴格依比例抽選 25 題智力測驗與 25 題專業科目，組合成全新的 50 題試卷。</p>
+                    
+                    <div class="exam-options-panel">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="overall-shuffle-options" checked>
+                            打亂選項順序 (A/B/C/D 順序洗牌)
+                        </label>
+                    </div>
+
+                    <button class="start-exam-btn" style="background-color: var(--orange-flag);" onclick="startOverallExam()">開始總模擬考</button>
+                </div>
+            </div>
+
+            <!-- Overall exam progress interface -->
+            <div id="overall-progress-view" style="display: none;">
+                <div class="questions-list" id="overall-questions-list"></div>
+            </div>
+
+            <!-- Overall exam results interface -->
+            <div id="overall-results-view" style="display: none;"></div>
+        </section>
+
+    </main>
+
+    <!-- Fixed Floating Status Bar for Exams -->
+    <div class="exam-status-bar" id="exam-floating-status" style="display: none;">
+        <div class="exam-timer">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            測驗時間: <span id="timer-display">00:00</span>
+        </div>
+        <div class="exam-progress">
+            答題進度: <span id="progress-answered">0</span> / <span id="progress-total">50</span>
+        </div>
+        <button class="submit-exam-btn" onclick="submitExam()">提交答案</button>
+    </div>
+
+    <!-- JavaScript containing questions database with detailed solutions & explanations -->
+    <script>
+        const fullQuestions = [
+            // ==================== 113年考題 ====================
+            {"id": "113-1", "num": 1, "year": 113, "type": "intelligence", "question": "有一火車速度 4m/sec，欲通過鐵橋，火車全長為 36 公尺，若火車完全通過鐵橋需 13 秒，則鐵橋全長為多少公尺？", "options": ["13 公尺", "14 公尺", "15 公尺", "16 公尺"], "answer": "D", "explanation": "火車完全通過鐵橋所行經的總長度 = 鐵橋長度 + 火車全長。\n總長度 = 速度 × 時間 = 4 m/s × 13 秒 = 52 公尺。\n鐵橋長度 = 52 公尺 - 36 公尺 (火車全長) = 16 公尺。\n正確答案為 (D)。"},
+            {"id": "113-2", "num": 2, "year": 113, "type": "intelligence", "question": "一繩剪去 9 公尺，剩下的比全長的 3/4 少 4 公尺，問繩子原長？", "options": ["20.5 公尺", "21 公尺", "20 公尺", "21.5 公尺"], "answer": "C", "explanation": "設繩子原長為 X 公尺。\n剪去 9 公尺後，剩下 (X - 9) 公尺。\n依題意列出關係方程式：\nX - 9 = (3/4)X - 4\n移項整理：\nX - (3/4)X = 9 - 4\n(1/4)X = 5\nX = 20 公尺。\n正確答案為 (C)。"},
+            {"id": "113-3", "num": 3, "year": 113, "type": "intelligence", "question": "法國麵包原價 50 元，逢週年慶打八折，晚上九點後再便宜二成。請問在週年慶晚上九點半，法國麵包實際售價多少元？", "options": ["32 元", "36 元", "38 元", "40 元"], "answer": "A", "explanation": "1. 週年慶打八折後的價格 = 原價 50 元 × 0.8 = 40 元。\n2. 晚上九點半符合「晚上九點後再便宜二成 (即打八折)」的規定。\n折上折後的售價 = 40 元 × (1 - 0.2) = 40 元 × 0.8 = 32 元。\n正確答案為 (A)。"},
+            {"id": "113-4", "num": 4, "year": 113, "type": "intelligence", "question": "已知兄的年紀是弟年紀的 3 倍，兄 6 年前的年紀與弟 6 年後的年紀相同，則請問弟年紀現在幾歲？", "options": ["2 歲", "4 歲", "6 歲", "8 歲"], "answer": "C", "explanation": "設弟現在年紀為 X 歲，則兄現在年紀為 3X 歲。\n「兄 6 年前的年紀」為 3X - 6。\n「弟 6 年後的年紀」為 X + 6。\n依題意列出方程式：\n3X - 6 = X + 6\n2X = 12\nX = 6 歲。\n正確答案為 (C)。"},
+            {"id": "113-5", "num": 5, "year": 113, "type": "intelligence", "question": "若父親的年紀為兒子年紀的 12 倍，則父親與兒子的年紀差距應為多少歲？", "options": ["21 歲", "22 歲", "23 歲", "24 歲"], "answer": "B", "explanation": "設兒子現在的年紀為 X 歲，則父親的年紀為 12X 歲。\n兩人的年紀差距 = 12X - X = 11X (必為 11 的整數倍數)。\n觀察選項：\n(A) 21 (B) 22 (C) 23 (D) 24\n只有 22 是 11 的倍數，此時 X = 2 (兒子為 2 歲，父親為 24 歲，差距 22 歲)。\n正確答案為 (B)。"},
+            {"id": "113-6", "num": 6, "year": 113, "type": "intelligence", "question": "某家飲料公司推出特價促銷活動，一杯飲料只賣 15 元，收集空飲料杯 3 杯，買飲料可折抵 10 元，則請問 50 元最多可以喝到幾杯飲料？", "options": ["2 杯", "3 杯", "4 杯", "5 杯"], "answer": "C", "explanation": "1. 50 元可以先買 3 杯飲料 (15 × 3 = 45 元)，剩餘 5 元。\n2. 喝完 3 杯飲料後，收集這 3 個空杯可以折抵 10 元。\n3. 折抵的 10 元加上先前剩下的 5 元，剛好有 15 元，可以再買第 4 杯飲料。\n4. 喝完第 4 杯後只剩 1 個空杯，無法再折抵。\n所以最多共可以喝到 3 + 1 = 4 杯飲料。\n正確答案為 (C)。"},
+            {"id": "113-7", "num": 7, "year": 113, "type": "intelligence", "question": "有一繩長若干，欲用此繩測量井深，已知此繩對折後垂入井中，尚餘 2.5 公尺在井外，3 折後垂入井中卻不足 1 公尺，則請問此井深為多少？", "options": ["5 公尺", "6.5 公尺", "7.5 公尺", "8 公尺"], "answer": "D", "explanation": "設繩長為 L 公尺，井深為 H 公尺。\n依題意列出二元一次聯立方程式：\n1) L/2 - H = 2.5  =>  L - 2H = 5\n2) H - L/3 = 1  =>  3H - L = 3\n將兩式相加消去 L：\n(L - 2H) + (3H - L) = 5 + 3\nH = 8 公尺。\n正確答案為 (D)。"},
+            {"id": "113-8", "num": 8, "year": 113, "type": "intelligence", "question": "一個 12 小時制的時鐘，時針的移動速度為一分鐘多少角度？", "options": ["0.5 度", "1 度", "2 度", "2.5 度"], "answer": "A", "explanation": "時針繞行時鐘一圈共計 12 小時，即 12 × 60 = 720 分鐘。\n圓周為 360 度。\n時針每分鐘移動的角度 = 360 度 / 720 分鐘 = 0.5 度 / 分鐘。\n正確答案為 (A)。"},
+            {"id": "113-9", "num": 9, "year": 113, "type": "intelligence", "question": "平均數、個數以及總和的關係，下列哪一個選項正確？", "options": ["總和 ＝ 個數 ＋ 平均數", "總和 － 個數 ＝ 平均數", "總和 × 平均數 ＝ 個數", "總和 ÷ 個數 ＝ 平均數"], "answer": "D", "explanation": "平均數的定義為：總和除以個數。\n即 平均數 = 總和 / 個數。\n等號兩邊移項可得 總和 ÷ 個數 ＝ 平均數。\n正確答案為 (D)。"},
+            {"id": "113-10", "num": 10, "year": 113, "type": "intelligence", "question": "衛生福利部保護婦女兒童專線為?", "options": ["113", "117", "119", "165"], "answer": "A", "explanation": "我國的「保護專線」為 113，提供家庭暴力、性侵害、性騷擾及兒少保護等諮詢與協助。\n正確答案為 (A)。"},
+            {"id": "113-11", "num": 11, "year": 113, "type": "intelligence", "question": "下列有關年齡之敘述，何者正確？", "options": ["堂哥正值「二八年華」，最是人生青春洋溢發光發熱的時刻。", "他雖已年近「花甲」，即將退休，身體卻還很硬朗。", "奮鬥了大半輩子已是「弱冠」之年，自然要享享清福。", "「而立」之年的我們即將從國中畢業，邁向人生另一里程碑。"], "answer": "B", "explanation": "年齡代稱分析：\n(A)「二八年華」指 16 歲 (2×8)，通常用以形容女子，形容堂哥年齡並不貼切。\n(B)「花甲」指 60 歲 (一甲子為六十天干地支)，接近退休年齡且身體硬朗，敘述正確。\n(C)「弱冠」指男子 20 歲，剛成年，不可能說「奮鬥了大半輩子且要享清福」。\n(D)「而立」指 30 歲 (三十而立)，不可能剛從國中畢業。\n正確答案為 (B)。"},
+            {"id": "113-12", "num": 12, "year": 113, "type": "intelligence", "question": "儒家中的「五倫」:君臣有義、長幼有序、夫妻有別、_____、父子有親。空格處應填入？", "options": ["夫婦有別", "情人有愛", "朋友有信", "子女有孝"], "answer": "C", "explanation": "五倫為儒家基本的人際關係準則，分別是：\n父子有親、君臣有義、夫婦有別、長幼有序、朋友有信。\n正確答案為 (C)。"},
+            {"id": "113-13", "num": 13, "year": 113, "type": "intelligence", "question": "下列有幾個成語可以用來形容美女？甲.玉樹臨風 乙.國色天香 丙.潘安再世 丁.傾國傾城 戊.閉月羞花 己.風流倜儻 庚.沉魚落雁 辛.天生麗質。", "options": ["4 個", "5 個", "6 個", "7 個"], "answer": "B", "explanation": "成語適用性分析：\n- 甲.玉樹臨風：形容男子才貌秀群、瀟灑俊美。\n- 乙.國色天香：形容女子極為美貌 (適用)。\n- 丙.潘安再世：形容男子容貌極俊美。\n- 丁.傾國傾城：形容女子容貌極美，可使城國傾覆 (適用)。\n- 戊.閉月羞花：形容女子容貌絕美 (適用)。\n- 己.風流倜儻：形容男子英俊瀟灑、不拘禮法。\n- 庚.沉魚落雁：形容女子容貌美麗 (適用)。\n- 辛.天生麗質：形容女子天生的美麗姿質 (適用)。\n適用於形容美女的有：乙、丁、戊、庚、辛，共 5 個。\n正確答案為 (B)。"},
+            {"id": "113-14", "num": 14, "year": 113, "type": "intelligence", "question": "做人應要圓滑，面面俱到。何者為同義詞？", "options": ["四處碰壁", "勇往直前", "左右逢源", "安如磐石"], "answer": "C", "explanation": "「左右逢源」比喻做事得心應手，或處事圓滑、面面俱到。\n(A) 四處碰壁：比喻處處受阻、不順利。\n(B) 勇往直前：勇敢且毫不猶豫地向前奮鬥。\n(D) 安如磐石：穩固得像大石頭一樣。\n正確答案為 (C)。"},
+            {"id": "113-15", "num": 15, "year": 113, "type": "intelligence", "question": "下列哪一個詞語不適合形容記憶長存？", "options": ["倏忽即逝", "刻骨銘心", "熱鐵烙膚", "沒齒難忘"], "answer": "A", "explanation": "「倏忽即逝」形容時間或事物極為短暫，瞬間便消失不見。\n其餘三者：「刻骨銘心」比喻感念深切，永遠不忘；「熱鐵烙膚」比喻記憶極為深刻；「沒齒難忘」意為一輩子都不會忘記。這三者都適合形容記憶長存。\n正確答案為 (A)。"},
+            {"id": "113-16", "num": 16, "year": 113, "type": "intelligence", "question": "大氣層中會吸收紫外線的是?", "options": ["氮氣", "氧氣", "氫氣", "臭氧"], "answer": "D", "explanation": "地球大氣層中的「臭氧層」主要位於平流層，能吸收陽光中絕大多數有害的紫外線，保護地球生命免受其害。\n正確答案為 (D)。"},
+            {"id": "113-17", "num": 17, "year": 113, "type": "intelligence", "question": "下列有關書函用語的說明，何者最正確？", "options": ["寫給老師的信自稱「晚生」。", "信中提到自己過世的親人應加「前」。", "信中提到他人父親，應稱「令尊」。", "寫給長官的信，信封收信人名下應寫「敬啟」。"], "answer": "C", "explanation": "書信禮儀分析：\n(A) 寫給老師的信，學生通常自稱「學生」或「受業」。「晚生」多為晚輩文人對前輩學者的謙稱，非師生專用。\n(B) 信中提到自己已過世的親人長輩，應加「先」字 (如先嚴、先慈)；過世的晚輩加「亡」字。非加「前」字。\n(C) 提到他人的父親，尊稱「令尊」，敘述完全正確。\n(D) 寫給長官或尊長，信封收信人名下的啟封詞不應寫「敬啟」 (這代表請對方恭敬地開啟，極不禮貌)，應寫「大啟」、「賜啟」或「鈞啟」。\n正確答案為 (C)。"},
+            {"id": "113-18", "num": 18, "year": 113, "type": "intelligence", "question": "下列成語使用錯誤的是：", "options": ["他常能掌握做事要領，無怪乎做起事來「事半功倍」。", "她努力工作買了新屋送給父母，「捫心自問」欣喜萬分。", "我認為仍應保留清明節祭祖的習俗，才能讓孩子們明白「慎終追遠」意義。", "這班同學程度「良莠不齊」，實在難掌握教學度，但仍應有教無類，不可放棄。"], "answer": "B", "explanation": "成語「捫心自問」意為按著胸口自我反省、檢討，用在此處形容買新屋送給父母的高興心情，文意不符，屬於誤用。\n正確答案為 (B)。"},
+            {"id": "113-19", "num": 19, "year": 113, "type": "intelligence", "question": "「賢喬梓」為以下何選項的美稱：", "options": ["稱人父母", "稱人父子", "稱人夫婦", "稱人兄弟"], "answer": "B", "explanation": "「喬梓」源自於古語中對喬木和梓木的形容，在書信用語中尊稱他人的「父子」為「賢喬梓」或「喬梓」。\n(A) 稱人夫婦：賢伉儷\n(C) 稱人兄弟：賢昆仲\n正確答案為 (B)。"},
+            {"id": "113-20", "num": 20, "year": 113, "type": "intelligence", "question": "下列「」中的形似字，何組的讀音相同？", "options": ["「博」學／師「傅」", "監「獄」／山「嶽」", "「饑」荒／京「畿」", "「朔」氣／追「溯」"], "answer": "C", "explanation": "讀音字形分析：\n(A) 「博」學 (ㄅㄛˊ) ／ 師「傅」 (ㄈㄨˋ)\n(B) 監「獄」 (ㄩˋ) ／ 山「嶽」 (ㄩㄝˋ)\n(C) 「饑」荒 (ㄐㄧ) ／ 京「畿」 (ㄐㄧ)  (兩者讀音相同)\n(D) 「朔」氣 (ㄕㄨㄛˋ) ／ 追「溯」 (ㄙㄨˋ)\n正確答案為 (C)。"},
+            {"id": "113-21", "num": 21, "year": 113, "type": "intelligence", "question": "下列哪個字的部首不是「口」部?", "options": ["加", "可", "台", "叮"], "answer": "A", "explanation": "部首判定：\n-「加」：部首為「力」部。\n-「可」：部首為「口」部。\n-「台」：部首為「口」部。\n-「叮」：部首為「口」部。\n正確答案為 (A)。"},
+            {"id": "113-22", "num": 22, "year": 113, "type": "intelligence", "question": "「滴水穿石」之於「有志竟成」，猶如「出類拔萃」之於何者？", "options": ["曇花一現", "六根清淨", "明日黃花", "桂林一枝"], "answer": "D", "explanation": "「滴水穿石」與「有志竟成」皆比喻持之以恆、終能成功，兩者是同義詞。\n「出類拔萃」形容超群卓越，高出眾人。\n- (A) 曇花一現：比喻事物稀有或短暫出現。\n- (B) 六根清淨：佛教術語，身心無雜念貪戀。\n- (C) 明日黃花：比喻過時的事物。\n- (D) 桂林一枝：典出漢代郤詵對策，比喻超群出眾的傑出人才 (與出類拔萃為同義詞)。\n正確答案為 (D)。"},
+            {"id": "113-23", "num": 23, "year": 113, "type": "intelligence", "question": "「慎終追遠」是中國的重要觀念，這種祭拜祖先的文化傳統源自於哪一朝代？", "options": ["夏朝", "商朝", "周朝", "秦朝"], "answer": "B", "explanation": "歷史常識：祭拜祖先、重視宗法血緣與鬼神敬畏的觀念在「商朝」尤為盛行，商朝人極崇尚祖先崇拜並伴隨頻繁祭祀。\n正確答案為 (B)。"},
+            {"id": "113-24", "num": 24, "year": 113, "type": "intelligence", "question": "溫馨旅程一文的作者，帶已逾古稀之年的母親和朋友來台南，進行一場「公車古蹟巡禮」。而台南市政府針對年滿六十五歲的長者，可享免費搭乘公車的優惠。請問下列何人也可享用此優惠？", "options": ["從心之年的淑麗", "知命之年的淑雅", "耳順之年的瑞鎮", "強仕之年的振赫"], "answer": "A", "explanation": "年齡代稱對照是否大於或等於 65 歲：\n-「從心之年」指 70 歲 (孔子：七十而從心所欲不逾矩) (70 歲 >= 65 歲，可享優惠)。\n-「知命之年」指 50 歲 (五十而知天命)。\n-「耳順之年」指 60 歲 (六十而耳順)。\n-「強仕之年」指 40 歲。\n所以只有淑麗 (70歲) 符合長者優惠資格。\n正確答案為 (A)。"},
+            {"id": "113-25", "num": 25, "year": 113, "type": "intelligence", "question": "美津的時尚書店即將開張，馬克打算送花籃祝賀：下列那一選項，是最恰當的賀詞？", "options": ["珠聯璧合", "蓬蓽生輝", "駿業宏興", "甲第星羅"], "answer": "C", "explanation": "祝賀賀詞分析：\n(A) 珠聯璧合：常用於祝賀婚姻美滿。\n(B) 蓬蓽生輝：謙稱他人來訪或贈送字畫使自己的房屋增光增彩。\n(C) 駿業宏興：常用於祝賀商家開業、宏圖大展，生意興隆 (適合書店新張)。\n(D) 甲第星羅：常用於祝賀新居落成、住宅宏偉。\n正確答案為 (C)。"},
+            {"id": "113-26", "num": 26, "year": 113, "type": "professional", "question": "有關 C++ 語言基本資料型態，以下那一個錯誤？", "options": ["void", "int", "main", "char"], "answer": "C", "explanation": "C++ 的基本資料型態 (Primitive Data Types) 包含：`int` (整數)、`char` (字元)、`double` (雙倍精度浮點數)、`void` (無型態) 等。\n`main` 是 C++ 程式執行的進入點函式名稱，並非資料型態。\n正確答案為 (C)。"},
+            {"id": "113-27", "num": 27, "year": 113, "type": "professional", "question": "下列資料單位何者為由小而大順序排列？", "options": ["GB TB KB MB", "TB MB GB KB", "KB MB GB TB", "MB KB GB TB"], "answer": "C", "explanation": "電腦資料單位換算：\n1 KB (Kilobyte) = 1024 Bytes\n1 MB (Megabyte) = 1024 KB\n1 GB (Gigabyte) = 1024 MB\n1 TB (Terabyte) = 1024 GB\n所以從小到大排列依次為：KB < MB < GB < TB。\n正確答案為 (C)。"},
+            {"id": "113-28", "num": 28, "year": 113, "type": "professional", "question": "有關 C++ 語言中變數和常數作用的敘述，以下那一個錯誤 ？", "options": ["變數用來存放資料，以利程式執行，可以是整數，浮點，字串的資料型態", "程式中可以操作、改變變數的值", "常數存放固定數值，可以是整數，浮點，字串的資料型態", "程式中可以操作、改變常數值"], "answer": "D", "explanation": "常數 (Constants) 是指在程式執行過程中其值「不能被修改與操作變更」的固定數值。選項 (D) 稱可以改變常數值是錯誤的。\n正確答案為 (D)。"},
+            {"id": "113-29", "num": 29, "year": 113, "type": "professional", "question": "C++ 語言將分號放在 if 指令敘述右小括號後面，會發生以下何種情況 ？", "options": ["邏輯錯誤", "語法錯誤", "編譯錯誤", "執行時期例外錯誤"], "answer": "A", "explanation": "如果在 `if (condition)` 後面直接加上分號 `;`，語法上代表一個「空語句 (Empty Statement)」。\n這會導致編譯器將該 `if` 視為結束，而緊跟其後的大括號或陳述語句將被無條件執行，語法完全正確但背離程式邏輯，因此屬於「邏輯錯誤」。\n正確答案為 (A)。"},
+            {"id": "113-30", "num": 30, "year": 113, "type": "professional", "question": "Which two traffic types use the Real-Time Transport Protocol (RTP)?", "options": ["voice、web", "web、file transfer", "video、voice", "video、peer to peer"], "answer": "C", "explanation": "RTP (Real-time Transport Protocol) 即時傳輸協定，廣泛應用於即時的多媒體串流傳輸，如即時視訊 (Video) 與語音電話 (Voice)，其要求低延遲與高即時性。\n正確答案為 (C)。"},
+            {"id": "113-31", "num": 31, "year": 113, "type": "professional", "question": "在系統開發過程中，資料庫的結構可進行正規化與反正規化的調整，正規化最主要的優點在於？", "options": ["提升資料加密效率", "避免浪費儲存空間", "避免資料有不一致的狀況", "保護資料免於未經授權的存取"], "answer": "C", "explanation": "關聯式資料庫中，**正規化 (Normalization)** 的核心目的在於減少資料重複性，進而「避免資料新增、修改或刪除時產生異常與不一致的狀況 (Data Inconsistency)」。\n正確答案為 (C)。"},
+            {"id": "113-32", "num": 32, "year": 113, "type": "professional", "question": "Your company plans to deploy an Artificial Intelligence (AI) solution in Azure. What should the company use to build, test, and deploy predictive analytics solutions?", "options": ["Azure Logic Apps", "Azure Machine Learning Designer", "Azure Batch", "Azure Cosmos DB"], "answer": "B", "explanation": "Azure Machine Learning Designer 提供了視覺化的拖放式介面，可用於建立、測試和部署預測性分析機器學習解決方案。\n正確答案為 (B)。"},
+            {"id": "113-33", "num": 33, "year": 113, "type": "professional", "question": "假設有一資料常值為 77777，試問要儲存此資料常值的資料型別為何？", "options": ["float", "long", "int", "byte"], "answer": "C", "explanation": "在多數程式語言 (如 C++/Java/C#) 中，77777 是一個大於 32767 但在整數範圍內且無小數的常值。\n- `byte` 範圍通常為 -128 到 127 或 0 到 255 (放不下)。\n- `int` 是儲存 77777 最合適且最基本的整數資料型別。\n正確答案為 (C)。"},
+            {"id": "113-34", "num": 34, "year": 113, "type": "professional", "question": "關於可裝載的模塊，裝載時的參數，如 I/O 地址等的存放位置是：", "options": ["/etc/conf.modules", "/etc/lilo.conf", "/boot/System.map", "/etc/sysconfig"], "answer": "A", "explanation": "在 Linux 系統中，對於可載入內核模組 (Kernel Modules) 載入時的模組參數和硬體配置 (如 I/O 地址)，早期系統主要配置存放於 `/etc/conf.modules` (或較新版本的 `/etc/modprobe.conf` / `/etc/modprobe.d/` 等)。\n正確答案為 (A)。"},
+            {"id": "113-35", "num": 35, "year": 113, "type": "professional", "question": "下列何者為 C 語言的動態記憶體管理函數 ？", "options": ["new, delete", "malloc, free", "copy, paste", "define, typedef"], "answer": "B", "explanation": "在 C 語言中，動態記憶體配置是使用標準函式庫中的 `malloc()` 函式配置記憶體，並使用 `free()` 釋放記憶體。\n(`new` 與 `delete` 是 C++ 語言的運算子，非 C 語言函數)。\n正確答案為 (B)。"},
+            {"id": "113-36", "num": 36, "year": 113, "type": "professional", "question": "有關虛擬函數 (Virtual Function) 的敘述何者正確 ？", "options": ["宣告虛擬函數的類別必需宣告成朋友 (friend) 關係", "宣告虛擬函數的類別不可以被繼承", "C++ 編譯程式呼叫虛擬函數時會以動態結合 (Dynamic Binding) 方式判斷欲呼叫的是哪一個類別的虛擬函數", "C++ 編譯程式呼叫虛擬函數時會以靜態結合 (Static Binding) 方式判斷欲呼叫的是哪一個類別的虛擬函數"], "answer": "C", "explanation": "虛擬函數 (Virtual Function) 的存在是為了實現多型 (Polymorphism)。\n當在基礎類別中宣告虛擬函數，並透過指標呼叫時，C++ 編譯器會採用「動態結合 (Dynamic Binding，亦稱晚期結合)」在執行時期依據指標實際指向的物件型別，動態決定調用哪一個衍生類別的虛擬函數。\n正確答案為 (C)。"},
+            {"id": "113-37", "num": 37, "year": 113, "type": "professional", "question": "關於資料導向程式設計，下列敘述何者不正確？", "options": ["精進記憶體管理以提升程式效能", "經常注意經函數處理後輸出的物件其類別型態", "多採用條件式語法，避免運用邏輯值索引", "加強撰寫平行化程式的技巧可有助提升效能"], "answer": "C", "explanation": "資料導向設計 (Data-Oriented Design) 關注數據在 CPU 快取中的物理排列和連續性，多採用扁平資料、邏輯值遮罩或批量操作，並不鼓勵複雜的分支條件語句 (會影響流水線與快取效率)。選項 (C) 的敘述不正確。\n正確答案為 (C)。"},
+            {"id": "113-38", "num": 38, "year": 113, "type": "professional", "question": "請問 C# 類別繼承定義中, 若子類別的方法名稱與簽名都與父類別的方法名稱與簽名相同時, 稱之為:", "options": ["override", "overload", "over", "none"], "answer": "A", "explanation": "在 C# 中，子類別繼承父類別後，定義一個與父類別完全相同名稱及特徵標記 (Signature) 的方法來取代父類別的虛擬方法，這稱為方法「覆寫 (Override)」。\n正確答案為 (A)。"},
+            {"id": "113-39", "num": 39, "year": 113, "type": "professional", "question": "使用 do...while 無窮迴圈可搭配以下哪一個指令，來跳離迴圈？", "options": ["end", "exit do", "continue", "break"], "answer": "D", "explanation": "在 C++/C#/Java 等程式語言中，使用 `break` 關鍵字可以即時、強制跳出當前的迴圈結構 (包括 `do...while` 迴圈)；`continue` 是結束當前迭代進入下一次迴圈判定。\n正確答案為 (D)。"},
+            {"id": "113-40", "num": 40, "year": 113, "type": "professional", "question": "函數 f1 之第一個參數的資料結構為陣列 int pages[10][30];，下列有關二維陣列在函數 f1 之宣告方式，何者是正確 ？", "options": ["void f1(int pages[][], int size);", "void f1(int pages[][30], int size);", "void f1(int pages[10][], int size);", "void f1(int& pages, int size);"], "answer": "B", "explanation": "在 C 語言中，將二維陣列作為函式參數傳遞時，編譯器必須知道第二維的大小 (每列有多少個元素) 才能進行定址計算。\n因此，第二維度的大小「不能省略」，第一維度大小可以省略。\n即 `void f1(int pages[][30], int size)` 是合法且正確的宣告方式。\n正確答案為 (B)。"},
+            {"id": "113-41", "num": 41, "year": 113, "type": "professional", "question": "在 Python 程式語言中，每一行指令要用什麼符號做為敘述的結尾？", "options": ["句號「.」", "分號「;」", "逗號「,」", "無。不需要"], "answer": "D", "explanation": "Python 使用換行來分隔陳述語句，每一行指令結束不需要任何特殊結束符號 (如分號)。\n正確答案為 (D)。"},
+            {"id": "113-42", "num": 42, "year": 113, "type": "professional", "question": "機房區域屬於防範基本設備操作直接存取的重要防護區域，下列敘述何者「不」正確？", "options": ["限制具拍照或錄影功能之裝置攜帶進入機房", "外包商只能在工作檯使用電腦遠距操作主機，相關隨身碟（USB Disk）資料匯入，需要經過掃毒後由機房管理人員協助使用", "只有資訊人員可以自由進出機房，不用填寫出入登記表", "機房 Level 5 硬體安全模組（Hardware Security Module, HSM）設備需要另外實體隔離保護"], "answer": "C", "explanation": "資訊安全規範中，機房是核心重地。所有人員 (包括本單位的資訊與系統管理人員) 進出皆必須登記，不可未登記便自由進出。選項 (C) 的說法是不正確的安全守則。\n正確答案為 (C)。"},
+            {"id": "113-43", "num": 43, "year": 113, "type": "professional", "question": "C# 的介面繼承,下列何者描述是正確的:", "options": ["只支持單一繼承", "可以多重繼承", "都不支持", "以上皆非"], "answer": "B", "explanation": "在 C# 中，類別 (Class) 只支援單一繼承，但「介面 (Interface)」支援多重繼承，一個介面可以繼承多個基礎介面。\n正確答案為 (B)。"},
+            {"id": "113-44", "num": 44, "year": 113, "type": "professional", "question": "在 Python 程式語言中，要為該行程式標識為註解時要用什麼符號？", "options": ["井字號「#」", "冒號「:」", "在 Python 中不是使用符號標註為註解", "驚嘆號「!」"], "answer": "A", "explanation": "Python 語言中單行註解使用井字號 `#` 開頭。\n正確答案為 (A)。"},
+            {"id": "113-45", "num": 45, "year": 113, "type": "professional", "question": "在瀏覽網站時，如果瀏覽器送出請求，伺服器正常回應的狀態碼是？", "options": ["200", "304", "404", "501"], "answer": "A", "explanation": "HTTP 狀態碼中，`200 OK` 代表請求成功且伺服器正常回應數據。\n正確答案為 (A)。"},
+            {"id": "113-46", "num": 46, "year": 113, "type": "professional", "question": "如果要 timer1 計時器控制項物件，每一秒執行一次 Tick 事件，要將 Interval 屬性值設為：", "options": ["1", "10", "100", "1000"], "answer": "D", "explanation": "計時器控制項 (如 C# / VB Form 中的 Timer) 屬性 `Interval` 的單位是「毫秒 (Milliseconds)」。\n一秒等於 1000 毫秒，所以設定為 1000。\n正確答案為 (D)。"},
+            {"id": "113-47", "num": 47, "year": 113, "type": "professional", "question": "下列何者描述是合法的 C# 變數名稱:", "options": ["_123", "1_234", "int", "以上皆可"], "answer": "A", "explanation": "C# 變數命名規範：\n1) 開頭字元必須是字母或底線 `_`，不能是數字開頭。故 `1_234` 非法。\n2) 不能使用系統保留字/關鍵字作為變數名。故 `int` 非法。\n3) 底線開頭 `_123` 是合法的命名。\n正確答案為 (A)。"},
+            {"id": "113-48", "num": 48, "year": 113, "type": "professional", "question": "二進制數值 1101001 轉換為十六進制時，其值為", "options": ["69", "39", "8A", "7A"], "answer": "A", "explanation": "二進制轉換為十六進制的方法：\n從最右側起每 4 位數分成一組進行轉換。\n二進制 `0110 1001` (左側自動補 0)：\n- 第一組 `0110` = 0*8 + 1*4 + 1*2 + 0*1 = 6 (十六進制為 6)\n- 第二組 `1001` = 1*8 + 0*4 + 0*2 + 1*1 = 9 (十六進制為 9)\n合併起來就是 69 (十六進制為 0x69)。\n正確答案為 (A)。"},
+            {"id": "113-49", "num": 49, "year": 113, "type": "professional", "question": "如果要 timer1 計時器控制項物件，每一秒執行一次 Tick 事件，要將 Interval 屬性值設為：", "options": ["1", "10", "100", "1000"], "answer": "D", "explanation": "Timer 計時器的 Interval 單位是毫秒，每秒執行一次需要設為 1000 毫秒。\n正確答案為 (D)。"},
+            {"id": "113-50", "num": 50, "year": 113, "type": "professional", "question": "對於以下 C 程式，執行後輸出是那一個？", "code": "int num[2][3]={{1,2,3},{4,5,6}};\nint *p=&num[0][0];\nprintf(\"%d \\n\", *(p+2));", "options": ["3", "4", "5", "6"], "answer": "A", "explanation": "在 C 語言中，二維陣列在記憶體中是以連續排列儲存的，即：\nnum[0][0]=1, num[0][1]=2, num[0][2]=3, num[1][0]=4...\n指標 `p` 指向陣列起始點 `num[0][0]` 的位址。\n`p + 2` 代表向後移動 2 個整數大小的位址，因此指向 `num[0][2]`。\n解指標運算 `*(p+2)` 取出該位址的值，即為 3。\n正確答案為 (A)。"},
+
+            // ==================== 114年考題 ====================
+            {"id": "114-1", "num": 1, "year": 114, "type": "intelligence", "question": "老王賣水煎包，菜包一顆 10 元，肉包一顆 15 元，顧客欲購買 12 顆菜包及 2 顆肉包，今天開店周年慶打 8 折，請問折扣後需付多少錢？", "options": ["150 元", "120 元", "160 元", "200 元"], "answer": "B", "explanation": "1. 購買菜包的金額 = 12 顆 × 10 元/顆 = 120 元。\n2. 購買肉包的金額 = 2 顆 × 15 元/顆 = 30 元。\n3. 原價總計 = 120 + 30 = 150 元。\n4. 打八折折扣後的應付金額 = 150 元 × 0.8 = 120 元。\n正確答案為 (B)。"},
+            {"id": "114-2", "num": 2, "year": 114, "type": "intelligence", "question": "阿仁這次月考成績班上排名從前面和從面數來都是第 21 名，則請問阿仁班上同學總共有多少人？", "options": ["40 人", "41 人", "42 人", "43 人"], "answer": "B", "explanation": "排在阿仁前面的人數 = 21 - 1 = 20 人。\n排在阿仁後面的人數 = 21 - 1 = 20 人。\n班級總人數 = 前面人數 + 阿仁自己 + 後面人數 = 20 + 1 + 20 = 41 人。\n正確答案為 (B)。"},
+            {"id": "114-3", "num": 3, "year": 114, "type": "intelligence", "question": "下列哪一個選項的值與其他三個選項的值不同？", "options": ["(-7) × (-7) × (-7)", "(-7)³", "-7³", "(-7) × 3"], "answer": "D", "explanation": "選項數值解析：\n(A) (-7) × (-7) × (-7) = -343\n(B) (-7)³ = -343\n(C) -7³ = -343\n(D) (-7) × 3 = -21 (此值與其他三者截然不同)\n正確答案為 (D)。"},
+            {"id": "114-4", "num": 4, "year": 114, "type": "intelligence", "question": "求 (-5) × [ 7 × (8 - 17) - (9 - 19) ÷ (-2) ] = ？", "options": ["330", "340", "360", "390"], "answer": "B", "explanation": "依四則運算規則，先乘除後加減，括號內先算：\n1. (8 - 17) = -9\n2. (9 - 19) = -10\n3. 7 × (8 - 17) = 7 × (-9) = -63\n4. (9 - 19) ÷ (-2) = (-10) ÷ (-2) = 5\n5. 中括號內 = -63 - 5 = -68\n6. 最終計算 = (-5) × (-68) = 340。\n正確答案為 (B)。"},
+            {"id": "114-5", "num": 5, "year": 114, "type": "intelligence", "question": "小明想參加旅行團往綠島遊覽，現在每星期在某工廠做暑期工 44 小時，將一天所得工資的一半儲蓄起來。如果要算出他每星期能儲蓄多少錢，還要知道下列哪一項？", "options": ["旅行團多少人", "他每星期工作多少天", "每小時的工資", "旅行團雙程費是多少"], "answer": "C", "explanation": "要求得「每星期能儲蓄多少錢」：\n每星期儲蓄 = 每星期總工資 / 2 (因為存一半)。\n每星期總工資 = 每星期工作小時 (已知為 44) × 每小時的工資。\n所以必須知道「每小時的工資」。\n正確答案為 (C)。"},
+            {
+                "id": "114-6", 
+                "num": 6, 
+                "year": 114, 
+                "type": "intelligence", 
+                "question": "圖形如下列循環出現，則由第 26 數到第 78 個圖形，▲ 總共有幾個？", 
+                "html_diagram": '<div class="pattern-display" style="display:flex; gap:10px; align-items:center; background:var(--card-bg-secondary); padding:12px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px; width:fit-content; margin-top: 8px;"><span style="width:24px; height:24px; border:2px solid var(--text-color); display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; flex-shrink:0;"><span style="border-right:1px solid var(--text-color); border-bottom:1px solid var(--text-color);"></span><span style="border-bottom:1px solid var(--text-color);"></span><span style="border-right:1px solid var(--text-color);"></span><span></span></span><span style="width:24px; height:24px; border:2px solid var(--text-color); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span style="width:8px; height:8px; background:var(--text-color); border-radius:50%;"></span></span><span style="width:24px; height:24px; border:2px solid var(--text-color); display:flex; flex-direction:column; justify-content:space-between; flex-shrink:0;"><span style="height:50%; border-bottom:2px solid var(--text-color);"></span><span></span></span><span style="width:24px; height:24px; border:2px solid var(--text-color); border-radius:50%; display:flex; align-items:center; flex-shrink:0;"><span style="width:100%; height:2px; background:var(--text-color);"></span></span><span style="width:24px; height:24px; display:inline-block; flex-shrink:0;"><svg viewBox="0 0 30 30" width="24" height="24" style="overflow:visible;"><polygon points="0,0 30,30 30,0 0,30" fill="none" stroke="var(--text-color)" stroke-width="2.5"/></svg></span><span style="width:24px; height:24px; border:2px solid var(--text-color); position:relative; overflow:hidden; flex-shrink:0;"><span style="position:absolute; width:150%; height:2px; background:var(--text-color); transform:rotate(45deg); left:-5px; top:-1px;"></span><span style="position:absolute; width:150%; height:2px; background:var(--text-color); transform:rotate(-45deg); right:-5px; top:-1px;"></span></span><span style="width:24px; height:24px; display:inline-block; flex-shrink:0;"><svg viewBox="0 0 30 30" width="24" height="24" style="overflow:visible;"><polygon points="15,0 0,30 30,30" fill="none" stroke="var(--text-color)" stroke-width="2.5"/></svg></span><span style="font-size: 20px; font-weight: bold; margin-left: 5px; color: var(--text-color); flex-shrink:0;">...</span></div>',
+                "options": ["7 個", "8 個", "9 個", "10 個"], 
+                "answer": "B",
+                "explanation": "循環規律週期為 7，圖形依次是：[田、ʘ、日、Ө、bowtie、crossed-square、▲]。\n由第 26 數到第 78 個圖形，總數為 78 - 26 + 1 = 53 個。\n53 ÷ 7 = 7 次完整週期 餘 4。\n在 7 個完整週期中，每個週期包含一個 ▲，共計 7 個 ▲。\n餘數的 4 個圖形從第 26 個開始算起 (26 % 7 = 5，即週期第 5 個圖形)：\n- 第 26 個：bowtie\n- 第 27 個：crossed-square\n- 第 28 個：▲ (這裡包含一個 ▲！)\n- 第 29 個：田\n所以在餘下的 4 個圖形中，包含 1 個 ▲。\n總計 ▲ 數量 = 7 + 1 = 8 個。\n正確答案為 (B)。"
+            },
+            {"id": "114-7", "num": 7, "year": 114, "type": "intelligence", "question": "小明前三次的考試成績分別為 87、83、88 分。若他在第四次考試後，計算四次的平均分數，發現比第四次的分數多 21 分，則小明第四次的成績為幾分？", "options": ["70 分", "66 分", "62 分", "58 分"], "answer": "D", "explanation": "設第四次考試成績為 X 分。\n前三次分數和 = 87 + 83 + 88 = 258 分。\n四次平均分數 = (258 + X) / 4。\n依題意列出關係式：\n(258 + X) / 4 = X + 21\n兩邊同乘以 4：\n258 + X = 4(X + 21)\n258 + X = 4X + 84\n3X = 174\nX = 58 分。\n正確答案為 (D)。"},
+            {"id": "114-8", "num": 8, "year": 114, "type": "intelligence", "question": "一父親帶兒子參加宴會，問起他們父子年齡時，兒子回答：「16 年前，父親年齡是我的 3 倍，現在只有 2 倍」兒子是幾歲？", "options": ["30 歲", "31 歲", "32 歲", "33 歲"], "answer": "C", "explanation": "設兒子現在年齡為 X 歲，則父親現在為 2X 歲。\n16 年前：\n- 兒子年齡為 X - 16\n- 父親年齡為 2X - 16\n依題意列出關係式：\n2X - 16 = 3(X - 16)\n2X - 16 = 3X - 48\nX = 32 歲。\n正確答案為 (C)。"},
+            {
+                "id": "114-9", 
+                "num": 9, 
+                "year": 114, 
+                "type": "intelligence", 
+                "question": "請問圖中哪 1 面為此三角柱的底面？", 
+                "html_diagram": '<svg viewBox="0 0 200 200" width="160" height="160" style="margin: 10px auto; display: block; overflow: visible;"><rect x="20" y="70" width="50" height="60" fill="none" stroke="var(--text-color)" stroke-width="2"/><text x="45" y="105" fill="var(--text-color)" font-size="16" text-anchor="middle" font-weight="bold">ㄇ</text><rect x="70" y="70" width="50" height="60" fill="none" stroke="var(--text-color)" stroke-width="2" stroke-dasharray="4 2"/><text x="95" y="105" fill="var(--text-color)" font-size="16" text-anchor="middle" font-weight="bold">ㄈ</text><rect x="120" y="70" width="50" height="60" fill="none" stroke="var(--text-color)" stroke-width="2"/><text x="145" y="105" fill="var(--text-color)" font-size="16" text-anchor="middle" font-weight="bold">ㄅ</text><polygon points="120,70 170,70 145,20" fill="none" stroke="var(--text-color)" stroke-width="2"/><text x="145" y="55" fill="var(--text-color)" font-size="16" text-anchor="middle" font-weight="bold">ㄉ</text><polygon points="120,130 170,130 145,180" fill="none" stroke="var(--text-color)" stroke-width="2"/><text x="145" y="155" fill="var(--text-color)" font-size="16" text-anchor="middle" font-weight="bold">ㄆ</text><text x="15" y="65" fill="var(--text-color)" font-size="12">A</text><text x="70" y="65" fill="var(--text-color)" font-size="12">B</text><text x="120" y="65" fill="var(--text-color)" font-size="12">C</text><text x="145" y="15" fill="var(--text-color)" font-size="12">D</text><text x="175" y="65" fill="var(--text-color)" font-size="12">E</text><text x="175" y="145" fill="var(--text-color)" font-size="12">F</text><text x="145" y="195" fill="var(--text-color)" font-size="12">G</text><text x="120" y="145" fill="var(--text-color)" font-size="12">H</text><text x="70" y="145" fill="var(--text-color)" font-size="12">I</text><text x="15" y="145" fill="var(--text-color)" font-size="12">J</text></svg>',
+                "options": ["ㄉ", "ㄈ", "ㄇ", "ㄆ"], 
+                "answer": "D",
+                "explanation": "三角柱展開圖中，包含 3 個長方形側面和 2 個三角形底面。\n圖中長方形側面為 `ㄇ`、`ㄈ`、`ㄅ`。\n三角形底面為 `ㄉ` 與 `ㄆ`。\n選項中只有 ㄆ 為三角形底面，其餘為側面或另一底面。\n正確答案為 (D)。"
+            },
+            {"id": "114-10", "num": 10, "year": 114, "type": "intelligence", "question": "丁丁去吃飯，點了一個 500 元的套餐，結帳時需加收一成服務費，丁丁需要付多少元？", "options": ["505 元", "510 元", "550 元", "600 元"], "answer": "C", "explanation": "加收一成 (10%) 的服務費：\n應付金額 = 套餐價格 500 元 × (1 + 0.1) = 500 × 1.1 = 550 元。\n正確答案為 (C)。"},
+            {"id": "114-11", "num": 11, "year": 114, "type": "intelligence", "question": "下列詞語，何者所指稱的年齡最大？", "options": ["及笄之年", "耳順之年", "古稀之年", "花甲之年"], "answer": "C", "explanation": "年齡代稱分析：\n-「及笄之年」：指女子 15 歲。\n-「耳順之年」：指 60 歲。\n-「古稀之年」：指 70 歲 (杜甫：人生七十古來稀)。\n-「花甲之年」：指 60 歲。\n比較後年齡最大的是古稀之年 (70歲)。\n正確答案為 (C)。"},
+            {"id": "114-12", "num": 12, "year": 114, "type": "intelligence", "question": "（甲）萋萋 （乙）離離 （丙）皎皎 （丁）蔚蔚 （戊）鬱鬱 (己) 蕭蕭。以上那些詞語可用來形容「草木茂盛」？", "options": ["甲乙丙丁", "甲丙丁己", "甲丁戊己", "甲乙丁戊"], "answer": "D", "explanation": "詞彙文意分析：\n- 甲.萋萋：形容草木茂盛的樣子 (符合)。\n- 乙.離離：形容草木茂盛的樣子 (如白居易：離離原上草) (符合)。\n- 丙.皎皎：形容月光潔白明亮。\n- 丁.蔚蔚：形容草木茂盛、繁茂 (符合)。\n- 戊.鬱鬱：形容草木茂盛叢生 (如鬱鬱蔥蔥) (符合)。\n- 己.蕭蕭：形容冷落、蕭條落寞，或風聲馬鳴。\n可以形容草木茂盛的是：甲、乙、丁、戊。\n正確答案為 (D)。"},
+            {"id": "114-13", "num": 13, "year": 114, "type": "intelligence", "question": "「班導師要結婚，準師丈是位獸醫。班上同學想送給老師結婚賀卡。」下列題辭何者最恰當？", "options": ["鳳凰于飛", "杏林春雨", "仁心仁術", "美輪美奐"], "answer": "A", "explanation": "結婚賀詞分析：\n(A) 鳳凰于飛：用於祝賀婚姻美滿，夫妻和睦 (最貼切結婚賀卡)。\n(B) 杏林春雨：常用於讚譽醫術高明、醫德高尚 (一般稱醫人為杏林，非獸醫結婚)。\n(C) 仁心仁術：用於讚譽醫生醫術精湛、心懷慈悲。\n(D) 美輪美奐：用於祝賀房屋落成、新居入厝。\n正確答案為 (A)。"},
+            {"id": "114-14", "num": 14, "year": 114, "type": "intelligence", "question": "人生究竟是光明美好，或者是灰頹陰暗，完全取決於", "options": ["口", "眼", "耳", "心"], "answer": "D", "explanation": "人生的感受在於其「心境」。境由心轉，人生是好是壞，完全取決於個人的內心與看待世界的態度。\n正確答案為 (D)。"},
+            {"id": "114-15", "num": 15, "year": 114, "type": "intelligence", "question": "「□言□鼎、□綱□常、□嘴□舌」，空格處中的數字加起來共多少？", "options": ["27", "33", "36", "38"], "answer": "B", "explanation": "成語空格數字分析：\n-「一」言「九」鼎 (1, 9)\n-「三」綱「五」常 (3, 5)\n-「七」嘴「八」舌 (7, 8)\n空格處中的數字加起來總和 = 1 + 9 + 3 + 5 + 7 + 8 = 33。\n正確答案為 (B)。"},
+            {"id": "114-16", "num": 16, "year": 114, "type": "intelligence", "question": "哪一個空氣品質指標表示現在空氣品質是良好的？", "options": ["49", "65", "103", "158"], "answer": "A", "explanation": "空氣品質指標 (AQI) 數值範圍：\n- 0 到 50：良好 (Green) (選項中 49 在此範圍內)。\n- 51 到 100：普通。\n- 101 到 150：對敏感族群不健康。\n正確答案為 (A)。"},
+            {"id": "114-17", "num": 17, "year": 114, "type": "intelligence", "question": "「傳記」是記載什麼內容的作品？", "options": ["人物生平事蹟", "旅遊過程紀實", "科學新知介紹", "時事新聞評論"], "answer": "A", "explanation": "「傳記」主要是記敘歷史人物的生平事蹟、思想與歷史活動的一種文學體裁。\n正確答案為 (A)。"},
+            {"id": "114-18", "num": 18, "year": 114, "type": "intelligence", "question": "下列選項中，哪一個的涵義跟包容、雅量無關？", "options": ["每個人都能縮小自己時，大家的空間就變大了", "世界上最寬闊的是海洋，比海洋更寬闊的是天空，比天空更寬闊的是人的胸懷", "平靜的湖面，練不出精悍的水手；安逸的環境，造不出時代的偉人", "得放手時須放手，得饒人處且饒人"], "answer": "C", "explanation": "文意分析：\n(A) 說明縮小自我、相互禮讓，屬於「雅量」。\n(B) 讚頌心胸開闊、無限包容，屬於「包容」。\n(C) 隱喻磨練與挫折才能造就傑出人才，屬於「鍛鍊與逆境」，與包容、雅量無關。\n(D) 指給予他人退步與寬恕的餘地，屬於「包容與寬恕」。\n正確答案為 (C)。"},
+            {"id": "114-19", "num": 19, "year": 114, "type": "intelligence", "question": "媽媽說最近是梅雨季節，東西很容易發霉，所以最近有可能是幾月份？", "options": ["一月", "五月", "八月", "十一月"], "answer": "B", "explanation": "台灣與東亞地區的「梅雨季節」通常發生在每年「五月至六月」期間，此時冷暖氣團交會，形成陰雨綿綿、潮濕易發霉的天氣。\n正確答案為 (B)。"},
+            {"id": "114-20", "num": 20, "year": 114, "type": "intelligence", "question": "磁磚和橋梁的設計中，都有預留空隙，是為了什麼原因？", "options": ["材料不足", "美觀", "防止受熱膨脹", "省錢"], "answer": "C", "explanation": "預留空隙是為了因應「熱脹冷縮」原理。若無空隙，材料受熱膨脹時會相互擠壓造成磚碎、橋梁扭曲甚至斷裂。\n正確答案為 (C)。"},
+            {"id": "114-21", "num": 21, "year": 114, "type": "intelligence", "question": "請問時針一天會轉幾圈？", "options": ["1 圈", "2 圈", "12 圈", "24 圈"], "answer": "B", "explanation": "時針轉動一整圈代表 12 個小時。\n一天有 24 小時，所以時針一天共轉動 24 / 12 = 2 圈。\n正確答案為 (B)。"},
+            {"id": "114-22", "num": 22, "year": 114, "type": "intelligence", "question": "「施惠勿念」的「勿」是什麼意思？", "options": ["不要", "一定", "必須", "匆忙"], "answer": "A", "explanation": "「施惠勿念，受恩莫忘」意指給予他人恩惠時「不要」時常掛記在心，而接受他人恩澤時切莫忘記。勿即「不要」。\n正確答案為 (A)。"},
+            {"id": "114-23", "num": 23, "year": 114, "type": "intelligence", "question": "「箕山之志」是形容一個人：", "options": ["喜好遊山玩水", "喜歡讀書研究", "有遠大的志向", "嚮往隱居"], "answer": "D", "explanation": "「箕山之志」典出《莊子》，許由隱居於箕山，拒絕堯帝禪讓帝位的誘惑，比喻高潔不仕、超然物外、嚮往隱居生活的志操。\n正確答案為 (D)。"},
+            {"id": "114-24", "num": 24, "year": 114, "type": "intelligence", "question": "下列何人的詩作，因雄奇飄逸，而有「詩仙」之稱？", "options": ["李白", "杜甫", "白居易", "李商隱"], "answer": "A", "explanation": "盛唐大詩人「李白」因詩作風格浪漫奔放、雄奇豪邁、意境飄逸，被後人尊稱為「詩仙」。\n正確答案為 (A)。"},
+            {"id": "114-25", "num": 25, "year": 114, "type": "intelligence", "question": "「野人獻□」 請問□應填入何字?", "options": ["曝", "醜", "功", "力"], "answer": "A", "explanation": "成語「野人獻曝」典出《列子》，指平民野人將曬太陽取暖的舒服感覺獻給君主，比喻平凡人所貢獻的微薄心意或建議，亦常用作自謙之詞。填入「曝」。\n正確答案為 (A)。"},
+            {"id": "114-26", "num": 26, "year": 114, "type": "professional", "question": "在 Python 程式語言中，在程式中需要縮排時，需用幾個字元？", "options": ["1 個定位(tab)字元", "1 個空白(space)字元", "只要有縮排即可沒有強制性", "4 個空白(space)字元"], "answer": "D", "explanation": "Python 官方推薦的 PEP 8 程式碼風格規範中，明文建議使用「4 個空白 (space)」作為一個級別的縮排。\n正確答案為 (D)。"},
+            {"id": "114-27", "num": 27, "year": 114, "type": "professional", "question": "Your company has an Azure subscription that contains resources in several regions. You need to ensure that administrators can only create resources in those regions. What should you use?", "options": ["a read-only lock", "an Azure policy", "a management group", "a reservation"], "answer": "B", "explanation": "Azure Policy 是一項用於建立、指派和管理原則的服務。可以使用 Azure Policy 原則來強制執行資源建立的區域限制，確保管理員僅能在允許的區域內建立資源。\n正確答案為 (B)。"},
+            {"id": "114-28", "num": 28, "year": 114, "type": "professional", "question": "下列何者關於 HTML/CSS/JavaScript 的描述，是正確的？", "options": ["網頁中一定要包含這三種語法才能正常運作", "所謂的選擇器(Selector) 是應用在 HTML 裡的", "網頁中的表單(form)例如輸入帳號密碼是使用 JavaScript 寫成的", "上面的描述都不正確"], "answer": "D", "explanation": "語法分析：\n(A) 網頁不一定要三者都有，單純 HTML 即可正常顯示。\n(B) 選擇器 (Selector) 是應用在 CSS 樣式表裡的，用以標示目標 HTML 節點，非應用在 HTML 標籤裡。\n(C) 表單 (form) 是 HTML 的語法結構，不是 JavaScript。\n因此 (A)(B)(C) 皆不正確，(D) 為唯一正確選項。\n正確答案為 (D)。"},
+            {"id": "114-29", "num": 29, "year": 114, "type": "professional", "question": "在資料表正規化的過程 1NF 到 BCNF 中每一個階段都是以欄位的「相依性」作為分割資料表的依據之一，關於正規化步驟之敘述，下列何者不正確？", "options": ["第一正規化型式：除去重覆群", "第二正規化型式：除去部分相依", "第三正規化型式：除去遞移相依", "Boyce Code正規化型式：除去多值相依"], "answer": "D", "explanation": "正規化定義：\n- 1NF：除去重覆群群 (屬性皆為質點)。\n- 2NF：除去部分函數相依 (主鍵若為複合鍵，不可有部分相依)。\n- 3NF：除去遞移函數相依。\n- BCNF (Boyce-Codd Normal Form)：為 3NF 的加強版，除去主屬性對非鍵值屬性的函數相依。\n- 4NF：才是除去「多值相依 (Multi-valued Dependency)」。所以 (D) 稱 BCNF 除去多值相依是不正確的。\n正確答案為 (D)。"},
+            {"id": "114-30", "num": 30, "year": 114, "type": "professional", "question": "C++ 語言指令 switch 的流程控制變數不可以使用哪一種資料型態？", "options": ["char", "int", "double", "byte"], "answer": "C", "explanation": "在 C++ 語言中，`switch` 陳述式的流程控制表達式必須是「整數型態 (Integral Type)」或「列舉型態 (Enumeration)」，包括 `char`、`int`、`short`、`long` 與擴充的 `byte`。\n浮點數型態 (如 `double`、`float`) 因為有精度誤差，無法直接進行精確的相等比對，因此「不允許」作為 switch 的控制變數。\n正確答案為 (C)。"},
+            {"id": "114-31", "num": 31, "year": 114, "type": "professional", "question": "在 Python 中如何表達一個程式區塊？", "options": ["使用中括號 [ … ]", "使用二個空行", "使用大括號 { … }", "使用縮排(Indentation)"], "answer": "D", "explanation": "Python 放棄了傳統 C 家族語言使用大括號 `{}` 包裹區塊的設計，改為完全使用強制「縮排 (Indentation)」來標記和界定程式碼區塊。\n正確答案為 (D)。"},
+            {"id": "114-32", "num": 32, "year": 114, "type": "professional", "question": "含有抽象方法的類別，何者描述是對的？", "options": ["一定是抽象類別", "可能是抽象類別", "一定不是抽象類別", "以上皆非"], "answer": "A", "explanation": "物件導向設計中，若一個類別中包含至少一個「未實作的抽象方法 (Abstract Method)」，則該類別在定義上「一定必須被宣告為抽象類別 (Abstract Class)」，因為它無法直接被實例化。\n正確答案為 (A)。"},
+            {"id": "114-33", "num": 33, "year": 114, "type": "professional", "question": "在 Windows 系統中哪個指令可以用來查看本機的 IP 位址？", "options": ["ip a", "ip addr", "ifconfig", "ipconfig"], "answer": "D", "explanation": "Windows 終端機 (CMD/PowerShell) 中用以查詢本機網路介面與 IP 位址的常用內置指令是 `ipconfig`。\n(`ifconfig` 為 Unix-like / early Mac 系統指令，`ip a` / `ip addr` 為現代 Linux 用戶指令)。\n正確答案為 (D)。"},
+            {"id": "114-34", "num": 34, "year": 114, "type": "professional", "question": "下列哪些資料型別在記憶體中所占據的空間不是 8 bytes？", "options": ["float", "DateTime", "long", "double"], "answer": "A", "explanation": "資料型別記憶體空間對照 (在 C# / 64-bit 系統中)：\n- `float` (單精度浮點數)：佔用 4 bytes (即 32 位元)。\n- `DateTime`：佔用 8 bytes。\n- `long` (長整數)：佔用 8 bytes。\n- `double` (雙精度浮點數)：佔用 8 bytes。\n因此只有 `float` 不是 8 bytes。\n正確答案為 (A)。"},
+            {"id": "114-35", "num": 115, "year": 114, "type": "professional", "question": "下列何者描述是正確的：", "options": ["用以產生物件的類別稱為具體類別", "只用來繼承，而無法產生物件的類別稱為抽象類別", "抽象類別含有屬性及方法", "以上皆是"], "answer": "D", "explanation": "OOP 定義檢驗：\n(A) 具體類別 (Concrete Class) 是完整實作所有方法的類別，可以直接用以 new 產生物件。\n(B) 抽象類別 (Abstract Class) 定義上無法直接實例化，主要作為父類別提供子類別繼承。\n(C) 抽象類別內雖然有抽象方法，但也完全可以包含具體的屬性 (Attributes) 與方法。\n三者皆完全正確。\n正確答案為 (D)。"},
+            {"id": "114-36", "num": 36, "year": 114, "type": "professional", "question": "在 Mac 系統中哪個指令可以用來查看本機的 IP 位址？", "options": ["ip a", "ip addr", "ifconfig", "ipconfig"], "answer": "C", "explanation": "Mac 系統基於 Unix (BSD) 內核，傳統上使用終端機指令 `ifconfig` 來查看和設定本機的網路卡與 IP 位址。\n正確答案為 (C)。"},
+            {"id": "114-37", "num": 37, "year": 114, "type": "professional", "question": "如下面敘述，試問 msg 結果為何？", "code": "int n1 = 24;\nint n2 = 13;\nint n3 = 7;\nstring msg = $\"{n1} + {n2} + {n3} = {n1 + n2 + n3}\";", "options": ["n1 + n2 + n3 = 24 + 13 + 7", "24 + 13 + 7 = 24137", "n1 + n2 + n3 = 44", "24 + 13 + 7 = 44"], "answer": "D", "explanation": "此段代碼在 C# 中使用字串內插補值 (String Interpolation) 語法 `$`：\n- `{n1}` 會被替換成變數值 `24`。\n- `{n2}` 會被替換成 `13`。\n- `{n3}` 會被替換成 `7`。\n- 最後的 `{n1 + n2 + n3}` 表達式會先計算求和 `24 + 13 + 7 = 44`，再轉成字串。\n拼接出來的結果為 \"24 + 13 + 7 = 44\"。\n正確答案為 (D)。"},
+            {"id": "114-38", "num": 38, "year": 114, "type": "professional", "question": "有關介面，下列何者描述是正確的：", "options": ["含有的方法，皆是抽象方法", "可以多重繼承", "含有的方法，皆是 public 方法", "以上皆是"], "answer": "D", "explanation": "介面特性分析：\n(A) 介面 (Interface) 只定義行為規範而不實作，其包含的方法皆是抽象方法。\n(B) 類別可以實現多個介面，介面之間也能多重繼承。\n(C) 介面內的方法預設為 public 存取級別 (因為是為了供外部實現調用)。\n以上說法皆正確。\n正確答案為 (D)。"},
+            {"id": "114-39", "num": 39, "year": 114, "type": "professional", "question": "下列哪幾個主機 IP 是可以連上網際網路？", "options": ["10.172.13.65", "172.16.223.125", "172.64.12.29", "192.168.23.252"], "answer": "C", "explanation": "IP 位址中，屬於「私有保留 IP 位址 (Private IP，不可直接在網際網路上路由)」的範圍為：\n- 10.0.0.0 到 10.255.255.255 (A 類私有，10.172.13.65 屬於此)\n- 172.16.0.0 到 172.31.255.255 (B 類私有，172.16.223.125 屬於此)\n- 192.168.0.0 到 192.168.255.255 (C 類私有，192.168.23.252 屬於此)\n選項中只有 172.64.12.29 屬於「公有 IP 位址」，可以直接在網際網路上進行路由與連線。\n正確答案為 (C)。"},
+            {"id": "114-40", "num": 40, "year": 114, "type": "professional", "question": "下列何者是 NoSQL 資料庫伺服器的名稱？", "options": ["Postgres", "Mongo", "Oracle", "Apache"], "answer": "B", "explanation": "「MongoDB」是著名的分散式文件導向式 NoSQL 開源資料庫系統，以 JSON 格式儲存結構化數據。\n(Postgres 與 Oracle 屬於關聯式資料庫 RDBMS)。\n正確答案為 (B)。"},
+            {"id": "114-41", "num": 41, "year": 114, "type": "professional", "question": "要定義一個用來儲存身分證字號的資料，其最適合的資料型別為何？", "options": ["float", "long", "string", "byte"], "answer": "C", "explanation": "我國身分證字號 (如 A123456789) 包含開頭大寫英文字母，且長度固定為 10 位，因此必須使用「字串 (string)」型別儲存，數值型別 (float, long, byte) 皆無法儲存英文半形字元。\n正確答案為 (C)。"},
+            {"id": "114-42", "num": 42, "year": 114, "type": "professional", "question": "下列何者是 C# bitwise AND 的符號：", "options": ["|", "&", "&&", "^"], "answer": "B", "explanation": "運算子比對：\n- `&`：是 C# 的位元邏輯與 (Bitwise AND) 運算子。\n- `&&`：是邏輯與 (Logical AND) 運算子。\n- `|`：位元邏輯或 (Bitwise OR)。\n- `^`：位元互斥或 (Bitwise XOR)。\n正確答案為 (B)。"},
+            {"id": "114-43", "num": 43, "year": 114, "type": "professional", "question": "有關引入(include) 輸出輸入所需各種功能的相關宣告，下列語法何者正確 ？", "options": ["#include <iostream.h>", "#include <Iostream.h>", "#include <iostream>", "#include \"iostream\""], "answer": "C", "explanation": "在現代標準 C++ 語言中，引入標準輸入輸出串流庫時，採用不帶 `.h` 副檔名的標頭檔，即使用 `#include <iostream>`。\n正確答案為 (C)。"},
+            {"id": "114-44", "num": 44, "year": 114, "type": "professional", "question": "如下面 C# 敘述，試問 msg 值為？(此題為官方釋出之送分題，選項有拼字瑕疵，本複習系統將接受所有選項且均判定正確，推薦答案仍以文法上最合適者顯示)", "code": "string name = \"peter\";\nstring msg = \"好\";\nmsg += name;", "options": ["peter 你好", "你好 peter", "peter", "你好"], "answer": "B", "explanation": "代碼邏輯分析：\n`msg` 開始為 \"好\"，`name` 為 \"peter\"。\n執行 `msg += name` 後，msg 的值應為 \"好peter\"。\n然而，試卷的選項中 (B) 給出的是 \"你好peter\"，多出了一個「你」字，存在題目排版拼寫瑕疵。\n這也是官方答案卷判定此題「送分」的緣由。\n本複習與測驗系統已相容此「送分題」邏輯，您點選任何選項皆視為正確，建議的語意答案推薦 (B)。", "free_points": true},
+            {"id": "114-45", "num": 45, "year": 114, "type": "professional", "question": "下列何者不是物件導向(OOP, Object-oriented programming)程式語言？", "options": ["Python", "C", "C#", "JavaScript"], "answer": "B", "explanation": "「C 語言」是一種經典的「程序導向 (Procedural Programming)」結構化程式語言，並不原生支援類別、繼承、多型等物件導向核心特性。\n(Python、C# 與 JavaScript 皆支援物件導向開發)。\n正確答案為 (B)。"},
+            {"id": "114-46", "num": 46, "year": 114, "type": "professional", "question": "FHD (Full HD) 是指下列何種像素解析度：", "options": ["1280*720", "640*480", "1920*1080", "3840*2160"], "answer": "C", "explanation": "常見螢幕解析度定義：\n- HD：1280 × 720\n- FHD (Full HD，全高畫質)：1920 × 1080\n- UHD (4K)：3840 × 2160\n正確答案為 (C)。"},
+            {"id": "114-47", "num": 47, "year": 114, "type": "professional", "question": "下列何種新技術與行動遊戲開發較無關？", "options": ["無人車", "擴增實境", "區塊鏈", "虛擬實境"], "answer": "A", "explanation": "「無人車 (Self-driving Cars / Autonomous Vehicles)」屬於自動駕駛與人工智慧控制硬體技術，與行動遊戲的軟體研發與發布無直接關聯。\n其餘三者 (VR 虛擬實境、AR 擴增實境、區塊鏈遊戲) 皆與現代行動遊戲開發關聯密切。\n正確答案為 (A)。"},
+            {"id": "114-48", "num": 48, "year": 114, "type": "professional", "question": "下列何者是 C# 內定的類別存取規範子：", "options": ["public", "protected", "private", "internal"], "answer": "D", "explanation": "在 C# 中，如果宣告一個類別 (Class) 時沒有寫任何存取修飾詞，其內定 (Default) 的存取級別是 `internal` (代表同一個組件/DLL 內可存取)。\n(如果是類別內部的成員變數或成員函式，未宣告時預設為 `private`)。\n正確答案為 (D)。"},
+            {"id": "114-49", "num": 49, "year": 114, "type": "professional", "question": "C++ 語言宣告陣列 int x[100]，最小索引值是以下那一個？", "options": ["-1", "0", "1", "2"], "answer": "B", "explanation": "C++ 中的陣列索引值 (Index) 都是從「0」開始起算的。因此大小為 100 的陣列，其索引值合法範圍為 0 至 99。最小索引值為 0。\n正確答案為 (B)。"},
+            {"id": "114-50", "num": 50, "year": 114, "type": "professional", "question": "如下面敘述 int score = 78;，試問要將 score 變數顯示在 LblScore 標籤上，其程式敘述應如何撰寫？", "options": ["LblScore.Name = score;", "LblScore.Caption = score;", "LblScore.Text = score.ToString();", "LblScore.Text = score;"], "answer": "C", "explanation": "在 C# (如 Windows Form 開發) 中：\n- 標籤控制項顯示文字的屬性為 `.Text`。\n- 變數 `score` 是 `int` 數值型別，不能直接賦值給 string 類型的 Text 屬性，必須調用 `.ToString()` 轉換成字串。\n故寫成 `LblScore.Text = score.ToString();`。\n正確答案為 (C)。"},
+
+            // ==================== 115年考題 ====================
+            {"id": "115-1", "num": 1, "year": 115, "type": "intelligence", "question": "梯形中，垂直上下兩底的線段叫作什麼？", "options": ["上底", "下底", "對角線", "高"], "answer": "D", "explanation": "幾何常識：在梯形中，垂直於上底與下底兩條平行線之間的垂直線段長度，定義為該梯形的「高」。\n正確答案為 (D)。"},
+            {"id": "115-2", "num": 2, "year": 115, "type": "intelligence", "question": "周魚的身高 180 公分，孫拳的身高是周魚的 0.9 倍，請問孫拳的身高是多少公分？", "options": ["144 公分", "152 公分", "162 公分", "200 公分"], "answer": "C", "explanation": "計算孫拳的身高 = 周魚身高 180 公分 × 0.9 = 162 公分。\n正確答案為 (C)。"},
+            {"id": "115-3", "num": 3, "year": 115, "type": "intelligence", "question": "滿滿去超商買東西，他帶的錢剛好夠買 25 包經濟包餅乾或 15 包豪華裝餅乾，如果滿滿先買了 10 包經濟包餅乾，他剩下的錢最多還可以買幾包豪華裝餅乾？", "options": ["7 包", "8 包", "9 包", "10 包"], "answer": "C", "explanation": "設滿滿身上的錢總共為 75 元 (取 25 與 15 的最小公倍數)。\n- 經濟包餅乾單價 = 75 / 25 = 3 元/包。\n- 豪華包餅乾單價 = 75 / 15 = 5 元/包。\n先買了 10 包經濟包餅乾，花費 = 10 × 3 = 30 元。\n剩下的錢 = 75 - 30 = 45 元。\n剩下的錢可以購買豪華包餅乾的數量 = 45 / 5 = 9 包。\n正確答案為 (C)。"},
+            {"id": "115-4", "num": 4, "year": 115, "type": "intelligence", "question": "一箱水果重 2.156 公斤，陳震買了 3 箱，請問他總共買了幾公斤？", "options": ["6.468", "6.788", "5.698", "4.288"], "answer": "A", "explanation": "陳震購買水果的總重量 = 一箱重 2.156 公斤 × 3 箱 = 6.468 公斤。\n正確答案為 (A)。"},
+            {"id": "115-5", "num": 5, "year": 115, "type": "intelligence", "question": "小蓮身上有 320 元，她本來想買 5 顆蘋果和 40 元的水蜜桃，結帳時發現錢不夠 20 元，一顆蘋果是多少元？", "options": ["52 元", "56 元", "60 元", "68 元"], "answer": "C", "explanation": "設一顆蘋果為 X 元。\n5 顆蘋果和一顆水蜜桃 (40元) 的總價為 5X + 40。\n結帳時不夠 20 元，代表總價比小蓮身上的 320 元還多出 20 元。\n方程式：\n5X + 40 = 320 + 20\n5X + 40 = 340\n5X = 300\nX = 60 元。\n正確答案為 (C)。"},
+            {
+                "id": "115-6", 
+                "num": 6, 
+                "year": 115, 
+                "type": "intelligence", 
+                "question": "下列選項為四個四邊形的兩條對角線，何者可能是正方形？", 
+                "html_diagram": '<div class="crosses-display" style="display:flex; justify-content:space-around; align-items:center; background:var(--card-bg-secondary); padding:15px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:12px; margin-top:8px;"><div style="text-align:center;"><svg viewBox="0 0 100 100" width="70" height="70"><line x1="10" y1="50" x2="90" y2="50" stroke="var(--text-color)" stroke-width="2.5"/><line x1="30" y1="15" x2="70" y2="85" stroke="var(--text-color)" stroke-width="2.5"/></svg><div style="font-weight:bold; margin-top:5px; color:var(--text-color);">(A)</div></div><div style="text-align:center;"><svg viewBox="0 0 100 100" width="70" height="70"><line x1="20" y1="50" x2="80" y2="50" stroke="var(--text-color)" stroke-width="2.5"/><line x1="50" y1="10" x2="50" y2="90" stroke="var(--text-color)" stroke-width="2.5"/></svg><div style="font-weight:bold; margin-top:5px; color:var(--text-color);">(B)</div></div><div style="text-align:center;"><svg viewBox="0 0 100 100" width="70" height="70"><line x1="10" y1="50" x2="90" y2="50" stroke="var(--text-color)" stroke-width="2.5"/><line x1="20" y1="20" x2="80" y2="80" stroke="var(--text-color)" stroke-width="2.5"/></svg><div style="font-weight:bold; margin-top:5px; color:var(--text-color);">(C)</div></div><div style="text-align:center;"><svg viewBox="0 0 100 100" width="70" height="70"><line x1="10" y1="50" x2="90" y2="50" stroke="var(--text-color)" stroke-width="2.5"/><line x1="50" y1="10" x2="50" y2="90" stroke="var(--text-color)" stroke-width="2.5"/></svg><div style="font-weight:bold; margin-top:5px; color:var(--text-color);">(D)</div></div></div>',
+                "options": ["(A)", "(B)", "(C)", "(D)"], 
+                "answer": "B",
+                "explanation": "正方形對角線的幾何特徵包括：\n1. 長度必須相等。\n2. 必須互相垂直且互相平分。\n- (A) 兩對角線不垂直、不相等。\n- (B) 兩對角線互相垂直。(此題為官方試卷原圖之判定正確答案)\n- (C) 兩對角線長度相等但不垂直。\n- (D) 兩對角線互相垂直且長度相等 (最完美之正方形性質，但此卷官方評分答案為 B)。\n在此將依據官方正式答案卷標準，判定 B 為正確答案。\n正確答案為 (B)。"
+            },
+            {"id": "115-7", "num": 7, "year": 115, "type": "intelligence", "question": "現對甲、乙兩箱水果秤重，小明說: 甲箱水果比乙箱水果重 27 公斤，小亮說: 甲箱比乙箱的 3 倍還多 1 公斤，他們兩個說的都對，那麼甲箱水果重多少公斤？", "options": ["13 公斤", "27 公斤", "32 公斤", "40 公斤"], "answer": "D", "explanation": "設甲箱重量為 X 公斤，乙箱重量為 Y 公斤。\n依據題意列出聯立方程式：\n1) X - Y = 27  =>  X = Y + 27\n2) X = 3Y + 1\n將兩式相等求 Y：\nY + 27 = 3Y + 1\n2Y = 26  =>  Y = 13 公斤 (乙箱重)。\n代入求得甲箱重量 X = 13 + 27 = 40 公斤。\n正確答案為 (D)。"},
+            {"id": "115-8", "num": 8, "year": 115, "type": "intelligence", "question": "有一丟銅板遊戲，其規則是丟出正面得 3 分，丟出反面得 2 分，之庭參加此遊戲，共丟了 32 次，得 78 分，求之庭共丟出幾次反面？", "options": ["18 次", "16 次", "14 次", "20 次"], "answer": "A", "explanation": "設丟出正面 X 次，丟出反面 Y 次。\n聯立方程式：\n1) X + Y = 32  =>  X = 32 - Y\n2) 3X + 2Y = 78\n將 1 式代入 2 式：\n3(32 - Y) + 2Y = 78\n96 - 3Y + 2Y = 78\n-Y = -18\nY = 18 次 (反面次數)。\n正確答案為 (A)。"},
+            {"id": "115-9", "num": 9, "year": 115, "type": "intelligence", "question": "河流的哪一段「侵蝕作用」最旺盛？", "options": ["上游", "中游", "下游", "以上皆是"], "answer": "A", "explanation": "河流的「上游」由於地勢陡峭、坡度大，流水流速極快，具有強大的動能，因此侵蝕作用 (特別是向下侵蝕和向源侵蝕) 最為旺盛。\n正確答案為 (A)。"},
+            {"id": "115-10", "num": 10, "year": 115, "type": "intelligence", "question": "曉明中學音樂班共有學生 32 人，男生人數是女生的 0.6 倍，音樂班的男、女生相差多少人？", "options": ["6 人", "7 人", "8 人", "9 人"], "answer": "C", "explanation": "設女生為 X 人，則男生為 0.6X 人。\nX + 0.6X = 32\n1.6X = 32\nX = 20 人 (女生人數)。\n男生人數 = 32 - 20 = 12 人。\n男女生人數差距 = 20 - 12 = 8 人。\n正確答案為 (C)。"},
+            {"id": "115-11", "num": 11, "year": 115, "type": "intelligence", "question": "下列選項中的成語，何者並非形容女子的容貌？", "options": ["沉魚落雁", "傾國傾城", "人老珠黃", "珠圓玉潤"], "answer": "D", "explanation": "成語詞義分析：\n-「沉魚落雁」、「傾國傾城」：形容女子容貌絕美。\n-「人老珠黃」：比喻女子衰老，像珍珠年久變黃，不再受重視 (雖含貶義，亦與容貌衰老相關)。\n-「珠圓玉潤」：形容歌聲圓潤婉轉，或文字流暢流利。並非用以形容容貌。\n正確答案為 (D)。"},
+            {"id": "115-12", "num": 12, "year": 115, "type": "intelligence", "question": "「濫竽充數」，比喻一個人：", "options": ["有志未伸", "無才居位", "力不從心", "庸人自擾"], "answer": "B", "explanation": "「濫竽充數」典出《韓非子》，比喻沒有真才實學的人，混在行家隊伍中充數；或比喻無才之人霸占著職位。\n正確答案為 (B)。"},
+            {"id": "115-13", "num": 13, "year": 115, "type": "intelligence", "question": "下列數字，何者屬於虛字？", "options": ["二八年華", "三皇五帝", "聲聞九霄", "十里長亭"], "answer": "C", "explanation": "虛字與實字辨析：\n-「二八年華」指 16 歲 (2×8=16，為實指)。\n-「三皇五帝」指古史傳說中的三皇與五帝 (實指)。\n-「聲聞九霄」中的九霄形容「極高的高空」，九字為虛字，指極多、極高，非恰好有九層天空。\n-「十里長亭」指古代路旁每十里設置的長亭 (實指)。\n正確答案為 (C)。"},
+            {"id": "115-14", "num": 14, "year": 115, "type": "intelligence", "question": "下列那一個成語可以用於祝壽？", "options": ["福壽全歸", "寶婺星沉", "松鶴遐齡", "宏圖大展"], "answer": "C", "explanation": "成語適用場合分析：\n(A) 福壽全歸：用於祝賀年高德劭者逝世的挽聯 (誄辭)，非祝壽。\n(B) 寶婺星沉：用於祝賀年高德劭女性逝世的挽聯。\n(C) 松鶴遐齡：比喻像松樹與仙鶴般長壽，常用於長輩祝壽。\n(D) 宏圖大展：用於祝賀商家開業或公司拓展。\n正確答案為 (C)。"},
+            {"id": "115-15", "num": 15, "year": 115, "type": "intelligence", "question": "以下「教」的讀音，哪一個和其他三個不同？", "options": ["「教」室", "「教」授", "「教\"育", "「教」琴"], "answer": "D", "explanation": "讀音辨析：\n-「教」室：ㄐㄧㄠˋ (去聲)\n-「教」授：ㄐㄧㄠˋ (去聲)\n-「教」育：ㄐㄧㄠˋ (去聲)\n-「教」琴：ㄐㄧㄠ (平聲，傳授技藝之動詞)\n正確答案為 (D)。"},
+            {"id": "115-16", "num": 16, "year": 115, "type": "intelligence", "question": "「在山澗之間，有一股泠泠的聲響，聽起來真悅耳。」「泠泠」可替換為下列何者？", "options": ["潺潺", "汲汲", "滔滔", "蕭蕭"], "answer": "A", "explanation": "「泠泠」在此形容清涼、清脆的流水聲。\n- (A) 潺潺：形容溪水、流水聲 (同義，可替換)。\n- (B) 汲汲：形容努力求取或急切忙碌的樣子 (如汲汲營營)。\n- (C) 滔滔：形容水勢極大，或說話綿延不絕。\n- (D) 蕭蕭：形容風聲或落葉聲。\n正確答案為 (A)。"},
+            {"id": "115-17", "num": 17, "year": 115, "type": "intelligence", "question": "在密閉或通風不良的空間使用瓦斯爐或熱水器時，容易因燃燒不完全而產生的隱形殺手是下列哪一種？", "options": ["一氧化氮", "一氧化二氫", "一氧化碳", "二氧化碳"], "answer": "C", "explanation": "瓦斯 (碳氫化合物) 燃燒時，若室內氧氣不足，會發生燃燒不完全，產生大量無色無味但極具毒性的「一氧化碳 (CO)」，極易導致人體缺氧窒息死亡。\n正確答案為 (C)。"},
+            {"id": "115-18", "num": 18, "year": 115, "type": "intelligence", "question": "「低頭向暗壁，千喚不一回」（李白長干行）句中「向」字意指：", "options": ["接近", "如果", "朝著", "先前"], "answer": "C", "explanation": "「低頭向暗壁」形容新婚妻子害羞，低著頭「朝著」昏暗的牆壁，即使喚上千百聲也不好意思回頭。向即「朝著」、「面對」。\n正確答案為 (C)。"},
+            {"id": "115-19", "num": 19, "year": 115, "type": "intelligence", "question": "某家店面的招牌上寫了「聞香下馬」四個字，依一般常情來說，最可能的是下列哪一種行業的店面？", "options": ["理容店", "寵物店", "餐飲店", "命相館"], "answer": "C", "explanation": "「聞香下馬，知味停車」常用以形容餐館或酒店的佳餚美酒香味撲鼻，吸引路過的人停下馬車進來品嚐。\n正確答案為 (C)。"},
+            {"id": "115-20", "num": 20, "year": 115, "type": "intelligence", "question": "□老□老。括號中填入何者能組成正確詞彙？", "options": ["奇，買", "偏，可", "倚，賣", "調，遣"], "answer": "C", "explanation": "成語「倚老賣老」形容人依仗自己年紀大、閱歷深，而擺出老資格，輕視或指責晚輩。\n正確答案為 (C)。"},
+            {"id": "115-21", "num": 21, "year": 115, "type": "intelligence", "question": "「他苦口婆心的勸兒子改過向善，結果卻是□□□□，□□□□，根本白費心力。」。上文□□□□中依次最適合填入的是：", "options": ["言者諄諄／聽者藐藐", "言者無罪／聞者足戒", "言聽計從／來者不拒", "言簡意賅／盲者得鏡"], "answer": "A", "explanation": "「言者諄諄，聽者藐藐」形容說話的人極有耐心、苦口婆心地勸導，而聽的人卻輕視冷淡、完全不放在心上，正貼切「白費心力」的語境。\n正確答案為 (A)。"},
+            {"id": "115-22", "num": 22, "year": 115, "type": "intelligence", "question": "「揮不揮棒是抉擇，把球傳給哪一壘是抉擇，該投好球、壞球、慢球、快球、直球還是變化球也是抉擇。」請問這段文字點出棒球場上如人生般的是哪一種現象？", "options": ["失敗多於成功", "有志者事竟成", "隨時準備妥當", "審慎做出抉擇"], "answer": "D", "explanation": "段落中反覆強調「揮棒是抉擇、傳球是抉擇、投球是抉擇」，指出棒球與人生一樣，時時刻刻面臨著必須「審慎做出抉擇」的現象與智慧。\n正確答案為 (D)。"},
+            {"id": "115-23", "num": 23, "year": 115, "type": "intelligence", "question": "「□□□像一個搖籃，柔柔軟軟的白絨布，裹著黃黃嫩嫩，熟睡的小嬰孩啊，我不忍心用筷子吵醒他。」這是一首新詩，詩中第一行的空格應該要填上什麼？", "options": ["蚵仔煎", "車輪餅", "荷包蛋", "蔥油餅"], "answer": "C", "explanation": "新詩修辭與聯想：\n描述中有「柔柔軟軟的白絨布」(指荷包蛋的白蛋白)、「裹著黃黃嫩嫩」(指中心嫩黃色的液態蛋黃)，以及「不忍心用筷子吵醒他」(夾破蛋黃)。顯然是在生動描寫「荷包蛋」。\n正確答案為 (C)。"},
+            {"id": "115-24", "num": 24, "year": 115, "type": "intelligence", "question": "「地球心臟／千萬年精釀的血液／人類只是飢餓的寄生蟲／貪婪的吸飲」（黃騰輝）這首詩所描述的對象為何？", "options": ["蚊子", "石油", "岩漿", "跳蚤"], "answer": "B", "explanation": "詩作意象分析：\n「地球心臟千萬年精釀的血液」指經過億萬年沉積與化學作用在地底生成的液態黃金「石油」，而人類貪婪地汲取吸飲。形象十分契合。\n正確答案為 (B)。"},
+            {"id": "115-25", "num": 25, "year": 115, "type": "intelligence", "question": "如果要造一句有關「風聲」的疊詞，我們會選用下列哪一個詞？", "options": ["呦呦", "關關", "幽幽", "颯颯"], "answer": "D", "explanation": "聲音疊詞辨析：\n-「呦呦」：形容鹿鳴聲 (如呦呦鹿鳴)。\n-「關關」：形容鳥鳴聲 (如關關雎鳩)。\n-「幽幽」：形容聲音微弱、幽深或光線昏暗。\n-「颯颯」：常用以形容風聲 (如秋風颯颯)。\n正確答案為 (D)。"},
+            {"id": "115-26", "num": 26, "year": 115, "type": "professional", "question": "下列程式執行完畢後所輸出值為何？", "code": "int main() {\n  int x = 0, n = 5;\n  for (int i=1; i<=n; i=i+1)\n    for (int j=1; j<=n; j=j+1) {\n      if ((i+j)==2) x = x + 2;\n      if ((i+j)==3) x = x + 3;\n      if ((i+j)==4) x = x + 4;\n    }\n}", "options": ["20", "21", "24", "26"], "answer": "A", "explanation": "雙層迴圈 trace，i 與 j 均從 1 遞增到 5 (計有 25 種 i, j 組合)：\n- 滿足 i+j = 2：有 (1,1) 一組，x 加上 2。\n- 滿足 i+j = 3：有 (1,2), (2,1) 兩組，x 加上 2 × 3 = 6。\n- 滿足 i+j = 4：有 (1,3), (2,2), (3,1) 三組，x 加上 3 × 4 = 12。\n其餘組合皆不符合條件。\n執行後 x 累加值 = 2 + 6 + 12 = 20。\n正確答案為 (A)。"},
+            {"id": "115-27", "num": 27, "year": 115, "type": "professional", "question": "右側 G()為遞迴函式，G(3, 7) 執行後回傳值為何？", "code": "int G (int a, int x) {\n  if (x == 0) return 1;\n  else return (a * G(a, x - 1));\n}", "options": ["2187", "1341", "3421", "21786"], "answer": "A", "explanation": "遞迴函式執行過程分析：\nG(a, x) 當 x > 0 時，會回傳 a * G(a, x - 1)，最終在 x = 0 時回傳 1。\n本質上是在計算 $a^x$ (a 的 x 次方)。\n因此 G(3, 7) 即代表 $3^7$ 運算。\n$3^7 = 3 \\times 3 \\times 3 \\times 3 \\times 3 \\times 3 \\times 3 = 2187$。\n正確答案為 (A)。"},
+            {"id": "115-28", "num": 28, "year": 115, "type": "professional", "question": "What can you use to automatically send an alert if an administrator stops an Azure virtual machine?", "options": ["Azure Advisor", "Azure Service Health", "Azure Monitor", "Azure Network Watcher"], "answer": "C", "explanation": "Azure Monitor 可以收集來自虛擬機器的度量與日誌。可以使用 Azure Monitor 的「警報規則 (Alert Rules)」來設定：當活動日誌紀錄中出現「關閉虛擬機器 (Deallocate Virtual Machine)」動作時，自動發送電子郵件或通知警報。\n正確答案為 (C)。"},
+            {"id": "115-29", "num": 29, "year": 115, "type": "professional", "question": "關於以下 SQL 語法的排列，請問順序應為何？\n1. FROM 選課資料表\n2. ORDER BY 成績Desc\n3. SELECT 學號, 課號, 成績\n4. WHERE 課程代號='A01'", "options": ["1324", "2134", "3142", "4312"], "answer": "C", "explanation": "標準 SQL 查詢語句的語法排列順序為：\n`SELECT` (欄位) -> `FROM` (資料表) -> `WHERE` (條件) -> `ORDER BY` (排序)。\n對應選項代號排序：\n3. SELECT ...\n1. FROM ...\n4. WHERE ...\n2. ORDER BY ...\n故組合順序為 3142。\n正確答案為 (C)。"},
+            {"id": "115-30", "num": 30, "year": 115, "type": "professional", "question": "下列何者不是 IPv6 提升路由效能的方法", "options": ["路由器不再切割封包", "移除表頭檢查碼欄位", "表頭固定為 40 位元組", "支援加密與認證"], "answer": "D", "explanation": "IPv6 的路由優化機制：\n(A) 路由器不再負責封包切割 (分片)，改由發送端主機路徑 MTU 探測處理，大幅減輕路由器負擔。\n(B) 移除 IP 表頭檢查碼 (Header Checksum)，依靠二層與四層檢錯，免除路由器每站重新計算檢查碼的開銷。\n(C) 採用「固定長度 (40 bytes) 的基本表頭」，使晶片處理定址更快速。\n(D) 支援 IPSec 加密與安全認證是安全性的增強 (Security)，並非用以提升「路由轉發效能」的方法。\n正確答案為 (D)。"},
+            {"id": "115-31", "num": 31, "year": 115, "type": "professional", "question": "下列哪一類型的數據結構可允許有不同資料型態？", "options": ["向量 Vector", "矩陣 Matrix", "陣列組 Array", "數據框 Data Frame"], "answer": "D", "explanation": "在數據分析與程式語言 (如 R / Python Pandas) 中：\n- `Vector` (向量)、`Matrix` (矩陣)、`Array` (陣列) 內部的所有元素必須是「相同」的資料型態。\n- `Data Frame` (數據框) 是一個二維表格結構，不同的「行 (Columns)」可以包含完全不同的資料型態 (如第一列為字串，第二列為數值，第三列為邏輯值)。\n正確答案為 (D)。"},
+            {"id": "115-32", "num": 32, "year": 115, "type": "professional", "question": "下列哪個程式可以用來測試節點是否存在且正常運作？", "options": ["arp.exe", "netstat.exe", "ping.exe", "tracert.exe"], "answer": "C", "explanation": "網路管理工具：\n- `ping.exe`：藉由發送 ICMP Echo Request 封包並等待接收回應，以此偵測目標主機網路節點是否存在且正常在線通訊。\n- `arp.exe`：顯示與修改 ARP 快取表。\n- `netstat.exe`：顯示活動中的 TCP 連線與監聽埠。\n- `tracert.exe`：追蹤路由路徑。\n正確答案為 (C)。"},
+            {"id": "115-33", "num": 33, "year": 115, "type": "professional", "question": "下列哪種無線通訊標準比較適合應用於手機行動支付？", "options": ["LTE", "WiMAX", "NFC", "UWB"], "answer": "C", "explanation": "NFC (Near Field Communication，近場通訊) 是一種短距離 (通常少於 10 公分) 的高頻無線通訊技術，安全性極高，廣泛且最適合應用於手機感應式行動支付 (如 Apple Pay, Google Pay)。\n正確答案為 (C)。"},
+            {"id": "115-34", "num": 34, "year": 115, "type": "professional", "question": "下列程式，若已知輸出的結果為[1][2][3][5][4][6]，程式中的 (?) 應為下列何者？", "code": "int main() {\n  int i, j;\n  for (i=0; i<5; i=i+1) {\n    for (j=0; (?); j=j+2) {\n      printf (\"[%d]\", i+j);\n    }\n  }\n}", "options": ["j<i", "j>i", "j<=i", "j>=i"], "answer": "A", "explanation": "分析輸出 `[1][2][3][5][4][6]` 與迴圈的邏輯：\n- 當 i = 0 時，輸出中「沒有」任何 `[0]` 或類似字元。說明當 i = 0 時內層迴圈不執行。此時 `j = 0`，若條件為 `j < i` (0 < 0 為偽)，不執行，符合。\n- 當 i = 1 時，`j = 0` (0 < 1 為真，印出 `[1]`)；`j = 2` (2 < 1 為偽，終止)。印出 `[1]`。\n- 當 i = 2 時，`j = 0` (0 < 2 為真，印出 `[2]`)；`j = 2` (2 < 2 為偽，終止)。印出 `[2]`。\n- 當 i = 3 時，`j = 0` (印出 `[3]`)；`j = 2` (印出 `[5]`)；`j = 4` (終止)。印出 `[3][5]`。\n- 當 i = 4 時，`j = 0` (印出 `[4]`)；`j = 2` (印出 `[6]`)；`j = 4` (終止)。印出 `[4][6]`。\n拼合所有的印出字元即為：`[1][2][3][5][4][6]`。\n因此條件運算式必為 `j < i`。\n正確答案為 (A)。"},
+            {"id": "115-35", "num": 35, "year": 115, "type": "professional", "question": "請問下列 C 程式，執行完後輸出為何？", "code": "int i=2, x=3;\nint N=65536;\nwhile (i <= N) {\n  i = i * i * i;\n  x = x + 1;\n}\nprintf (\"%d %d \\n\", i, x);", "options": ["123417851", "13417851", "1342177286", "134217286"], "answer": "C", "explanation": "逐步執行 (Trace) 迴圈：\n- 初始：i = 2, x = 3, N = 65536。\n- 第一次判定：2 <= 65536 成立。\n  - i = 2 * 2 * 2 = 8\n  - x = 3 + 1 = 4\n- 第二次判定：8 <= 65536 成立。\n  - i = 8 * 8 * 8 = 512\n  - x = 4 + 1 = 5\n- 第三次判定：512 <= 65536 成立。\n  - i = 512 * 512 * 512 = 134217728  (即 $2^{27}$)\n  - x = 5 + 1 = 6\n- 第四次判定：134217728 <= 65536 不成立，跳出迴圈。\n- 印出格式為 `printf (\"%d %d \\n\", i, x)`。\n輸出為 `134217728 6`。\n選項 (C) `1342177286` 係由於試卷字元排版漏掉空格所致，完全吻合運算值。\n正確答案為 (C)。"},
+            {"id": "115-36", "num": 36, "year": 115, "type": "professional", "question": "在使用非對稱式加密的前提下，假設甲方要傳送一份只有乙方能夠解密的資訊，那麼甲方必須使用下列何者進行加密？", "options": ["甲方的公鑰", "乙方的公鑰", "甲方的私鑰", "乙方的私鑰"], "answer": "B", "explanation": "非對稱加密 (Asymmetric Encryption) 安全規則：\n-「公鑰 (Public Key)」用於加密，所有人皆可取得，但「只有與之配對的私鑰」能解密。\n-「私鑰 (Private Key)」由所有者 (乙方) 嚴格保密，僅用於解密。\n若甲方要傳送只有乙方能解密的資料，甲方必須使用「乙方的公鑰」進行加密，如此一來，只有手握私鑰的乙方能成功還原解密。\n正確答案為 (B)。"},
+            {"id": "115-37", "num": 37, "year": 115, "type": "professional", "question": "若 n 為正整數，下列程式三個迴圈執行完畢後 a 值將為何？", "code": "int a=0, n;\n// ...\nfor (int i=1; i<=n; i=i+1)\n  for (int j=i; j<=n; j=j+1)\n    for (int k=1; k<=n; k=k+1)\n      a = a + 1;", "options": ["n²(n+1)/2", "n(n+1)/2", "n³/2", "n(n-1)/2"], "answer": "A", "explanation": "數學演算分析：\n- 外層與中層迴圈：i 從 1 到 n，j 從 i 到 n。這兩層產生的 `(i, j)` 組合總數為：\n  $n + (n-1) + (n-2) + ... + 1 = \\frac{n(n+1)}{2}$。\n- 最內層迴圈：k 始終獨立跑 n 次，每次內部進行 a++ 累加。\n- 因此在全部的 `(i, j)` 組合下，最內層都會各跑 n 次。\n- a 的最終累加值 = $\\frac{n(n+1)}{2} \\times n = \\frac{n^2(n+1)}{2}$。\n正確答案為 (A)。"},
+            {"id": "115-38", "num": 38, "year": 115, "type": "professional", "question": "在 PPP 協議中，哪個認證協議不以明文傳遞密碼？", "options": ["PAM", "PAP", "PGP", "CHAP"], "answer": "D", "explanation": "PPP (Point-to-Point Protocol) 認證機制比對：\n- `PAP` (Password Authentication Protocol)：密碼認證協定，是使用「明文 (Plaintext)」在網路上傳送帳號密碼，安全性極低。\n- `CHAP` (Challenge Handshake Authentication Protocol)：挑戰握手認證協定，採用 MD5 單向雜湊演算法進行三次握手詢答，過程中「不以明文傳遞密碼」，安全性高。\n正確答案為 (D)。"},
+            {"id": "115-39", "num": 39, "year": 115, "type": "professional", "question": "有以下指令：以下哪種方法不能傳回 x 向量的前 5 個元素，即：", "options": ["x[“a”, “b”, “c”, “d”, “e”]", "x[1:5]", "head(x, 5)", "x[letters[1:5]]"], "answer": "A", "explanation": "在 R 語言中提取向量前 5 個元素：\n- (B) `x[1:5]`：使用數值索引範圍，可正確提取。\n- (C) `head(x, 5)`：取出開頭 5 個元素，正確。\n- (D) `x[letters[1:5]]`：`letters[1:5]` 會產生 `[\"a\",\"b\",\"c\",\"d\",\"e\"]` 字串。若 x 向量有定義名稱屬性 (Names attribute)，則此寫法也可以透過名稱提取；若 x 無命名，這也是合法的寫法，只是返回 NA。\n- (A) `x[\"a\", \"b\", \"c\", \"d\", \"e\"]`：此寫法在 R 語法上是非法的 (Vector 一維索引只接受單個引數或一個向量，如 `x[c(\"a\",\"b\")]`。多個逗號分隔引數是用在 Matrix 二維等多維索引中，在一維向量會引發 Dimension 錯誤)。\n正確答案為 (A)。"},
+            {"id": "115-40", "num": 40, "year": 115, "type": "professional", "question": "Linux 中，提供 TCP/IP 包過濾功能的軟件叫什麼？", "options": ["rarp", "route", "iptables", "filter"], "answer": "C", "explanation": "在 Linux 內核中，提供了防火牆與封包過濾功能，其用戶端的配置工具軟體為 `iptables` (或現代系統的 `nftables`)，可設定各類過濾鏈規則。\n正確答案為 (C)。"},
+            {"id": "115-41", "num": 41, "year": 115, "type": "professional", "question": "You have an on-premises application that sends email notifications automatically based on a rule. You plan to migrate the application to Azure. You need to recommend a serverless computing solution for the application. What should you include in the recommendation?", "options": ["a web app", "a server image in Azure Marketplace", "a logic app", "an API app"], "answer": "C", "explanation": "Azure Logic Apps (邏輯應用程式) 是一項無伺服器 (Serverless) 整合工作流程服務。非常適合用來建立自動化工作流程，當滿足特定規則或觸發條件時 (基於對應的連接器) 自動發送電子郵件通知，無須編寫或管理任何基礎伺服器代碼。\n正確答案為 (C)。"},
+            {"id": "115-42", "num": 42, "year": 115, "type": "professional", "question": "若 IP 位址為 111.123.23.65/20 ， 其中「/20 」為何意？", "options": ["子網路遮罩的位元數", "IP 的位元數", "子網路遮罩中 0 的位元數", "子網路遮罩中 1 的位元數"], "answer": "D", "explanation": "CIDR 斜線表示法 (如 /20) 指的是子網路遮罩 (Subnet Mask) 從左側起算「二進制值為 1 的連續位元數」。\n例如 /20 代表子網路遮罩的前 20 位都是 1，即二進制 `11111111.11111111.11110000.00000000` (十進制 `255.255.240.0`)。\n正確答案為 (D)。"},
+            {"id": "115-43", "num": 43, "year": 115, "type": "professional", "question": "在 192.0.2.0/23 中，下列哪些 IP 位址是可以設定在主機上？", "options": ["192.0.2.255", "192.0.3.255", "192.0.4.0", "192.0.2.0"], "answer": "A", "explanation": "在 192.0.2.0/23 子網段中：\n- 斜線 /23 代表子網路大小為 512 個 IP (位址範圍為 192.0.2.0 至 192.0.3.255)。\n- 該網段的「網路位址」是第一個 IP：192.0.2.0 (不可設定在主機上)。\n- 該網段的「廣播位址」是最後一個 IP：192.0.3.255 (不可設定在主機上)。\n- 192.0.4.0 已經超出此網段範圍。\n- 192.0.2.255 是處於 192.0.2.1 與 192.0.3.254 之間的「可用主機 IP 位址」，完全可以指派給主機使用。\n正確答案為 (A)。"},
+            {"id": "115-44", "num": 44, "year": 115, "type": "professional", "question": "串列(list)使用時，如果索引值是多少，代表這是串列的最後一個元素？", "options": ["-1", "0", "1", "max"], "answer": "A", "explanation": "在 Python 語言中，串列 (List) 支援負數索引比對，`-1` 代表串列的最後一個元素，`-2` 代表倒數第二個元素，依此類推。\n正確答案為 (A)。"},
+            {"id": "115-45", "num": 45, "year": 115, "type": "professional", "question": "下列那一個資料型態不可以當作元組的元素？", "options": ["整數", "字元", "串列", "以上皆可當作元組元素"], "answer": "D", "explanation": "在 Python 中，元組 (Tuple) 是一種可以容納任何資料型態的容器。元組內的元素可以是整數、字元、字串，甚至可以包含可變的「串列 (list)」作為其成員。\n正確答案為 (D)。"},
+            {"id": "115-46", "num": 46, "year": 115, "type": "professional", "question": "通常電腦內部表示負的整數是用：", "options": ["2 的補數表示法", "8 的補數表示法", "10 的補數表示法", "9 的補數表示法"], "answer": "A", "explanation": "電腦內部為了方便硬體加法器同時處理正負數加減法，避免出現 +0 與 -0，均採用二進制的「2 的補數 (2's Complement) 表示法」來表示負整數。\n正確答案為 (A)。"},
+            {"id": "115-47", "num": 47, "year": 115, "type": "professional", "question": "關於 MS SQL 資料庫的存取控制設計，下列敘述何者較符合安全設計？", "options": [
+                "資訊系統開發運作，使用 SA 做為資訊系統存取資料庫的帳號及密碼，符合資料庫安全存取設計",
+                "MS SQL 系統可以建立多個資料庫，滿足不同資訊系統需求，所以可以讓不同委外開發商之資訊系統，共用同一組帳號密碼來存取不同資料庫，符合資料庫安全存取設計",
+                "某資訊系統有其前台系統 讀取 與後台管理系統 讀寫刪除 對資料庫進行存取，前台與後台共用同一個 DBO 帳號密碼",
+                "資訊系統所使用資料庫若採用 Microsoft Azure 上的 PaaS MS SQL 資料庫服務 非自建虛擬機再另行安裝的 MS SQL 資料庫系統該雲端 PaaS MS SQL 是無法使用 SA 帳號密碼"
+            ], "answer": "D", "explanation": "資安權限防護設計：\n(A) 系統不可直接使用高權限的 `sa` 系統管理員帳號連接，應使用最小權限原則建立專用低權限帳號，此敘述不安全。\n(B) 多個外部開發商共用帳號會導致權限混亂、無法追溯審計，此敘述不安全。\n(C) 前台與後台系統權限不同，前台只需唯讀，不應與後台共用高權限的 `dbo` 帳號。\n(D) Azure PaaS 服務 (如 Azure SQL Database) 在雲端託管模式下，預設採用 Microsoft Entra / 內置 SQL 管理員認證，其架構是「不提供與無法直接使用傳統 sa 系統管理員帳號登入管理」的，此設計最符合現代雲端最小曝露安全規範。\n正確答案為 (D)。"},
+            {"id": "115-48", "num": 48, "year": 115, "type": "professional", "question": "下面哪個協議使用了二個以上的端口？", "options": ["telnet", "FTP", "rsh", "HTTP"], "answer": "B", "explanation": "FTP (File Transfer Protocol，檔案傳輸協定) 在運作時同時使用兩個通訊埠：\n1) 21 埠：用於建立連線控制通道，傳送指令。\n2) 20 埠：用於傳送實際的資料檔案通道 (主動模式下)。\n其餘協定 (Telnet 23 埠, HTTP 80 埠) 在一個連線生命週期內皆僅使用單一通訊埠。\n正確答案為 (B)。"},
+            {"id": "115-49", "num": 49, "year": 115, "type": "professional", "question": "有關 C# char 資料型態，所佔記憶體空間為：", "options": ["1 Byte", "2 Bytes", "4 Bytes", "以上皆非"], "answer": "B", "explanation": "C# 中的 `char` 代表一個 Unicode 字元，為了完整容納 Unicode 多語言字元集，C# 底層採用 UTF-16 編碼，因此一個 `char` 佔用「2 Bytes」 (16 位元) 的記憶體空間。\n(在 C 語言中 char 佔用 1 byte)。\n正確答案為 (B)。"},
+            {"id": "115-50", "num": 50, "year": 115, "type": "professional", "question": "有關 C++ 語言的變數命名，以下何者正確 ？", "options": ["%abcd", "1abcd", "fruit -app le_long_name", "_a_long_name"], "answer": "D", "explanation": "C++ 變數命名詞法規則：\n1) 只能包含字母、數字與底線 `_`。不能有減號 `-` (會被誤認減法) 或百分號 `%`。故 `%abcd` 與 `fruit -app` 非法。\n2) 不能以數字開頭。故 `1abcd` 非法。\n3) 底線開頭 `_a_long_name` 是合法的命名規則。\n正確答案為 (D)。"}
+        ];
+
+        // Active State variables
+        let currentTheme = 'light';
+        let currentView = 'practice'; // practice, exam, overall
+        let currentPracticeYear = 113;
+        let currentPracticeCategory = 'all'; // all, intelligence, professional
+        let flaggedQuestions = JSON.parse(localStorage.getItem('flagged_questions') || '{}');
+        let showOnlyFlagged = false;
+        let searchQuery = '';
+
+        // Persistent Practice History tracking state variables
+        let practiceHistory = JSON.parse(localStorage.getItem('practice_history') || '{}');
+        let sidebarExpanded = false;
+
+        // Exam Session variables
+        let examActive = false;
+        let examYear = 113;
+        let examQuestions = [];
+        let examUserAnswers = {}; // id -> letter
+        let examTimer = null;
+        let examSeconds = 0;
+        let examShuffleOptions = true;
+
+        // Overall Exam Session variables
+        let overallActive = false;
+        let overallQuestions = [];
+        let overallUserAnswers = {};
+        let overallTimer = null;
+        let overallSeconds = 0;
+        let overallShuffleOptions = true;
+
+        // Theme controller
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // Update UI buttons
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`theme-btn-${theme}`).classList.add('active');
+            
+            // Save to localStorage
+            localStorage.setItem('review_system_theme', theme);
+        }
+
+        // View controller
+        function switchView(view) {
+            // End active exams if switching
+            if ((examActive || overallActive) && !confirm('您正在進行考試，切換分頁將放棄本次測驗，是否繼續？')) {
+                return;
+            }
+            
+            resetExamSession();
+            resetOverallExamSession();
+
+            currentView = view;
+            document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`nav-tab-${view}`).classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(sec => sec.style.display = 'none');
+            document.getElementById(`view-${view}`).style.display = 'block';
+
+            // Show/hide search container based on view
+            const searchContainer = document.getElementById('global-search-container');
+            if (view === 'practice') {
+                searchContainer.style.display = 'block';
+            } else {
+                searchContainer.style.display = 'none';
+            }
+
+            // Show/hide sidebar based on view
+            const sidebar = document.getElementById('study-sidebar');
+            if (view === 'practice') {
+                sidebar.style.display = 'flex';
+                updateSidebarProgress();
+            } else {
+                sidebar.style.display = 'none';
+                sidebar.classList.remove('expanded');
+                // Reset toggle pull tab arrow
+                const arrow = document.getElementById('pull-tab-arrow');
+                arrow.style.transform = '';
+                sidebarExpanded = false;
+            }
+
+            if (view === 'practice') {
+                renderPracticeQuestions();
+            } else if (view === 'exam') {
+                renderExamSetup();
+            } else if (view === 'overall') {
+                renderOverallSetup();
+            }
+        }
+
+        // Practice Mode functions
+        function switchPracticeYear(year) {
+            currentPracticeYear = year;
+            document.querySelectorAll('.practice-year-nav .year-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`year-tab-${year}`).classList.add('active');
+            renderPracticeQuestions();
+            updateSidebarProgress();
+        }
+
+        function switchPracticeCategory(cat) {
+            currentPracticeCategory = cat;
+            document.querySelectorAll('.sub-category-tabs .sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`cat-tab-${cat}`).classList.add('active');
+            renderPracticeQuestions();
+            updateSidebarProgress();
+        }
+
+        // Collapsible Sidebar Drawer handlers
+        function toggleSidebar() {
+            const sidebar = document.getElementById('study-sidebar');
+            const arrow = document.getElementById('pull-tab-arrow');
+            
+            sidebarExpanded = !sidebarExpanded;
+            if (sidebarExpanded) {
+                sidebar.classList.add('expanded');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                sidebar.classList.remove('expanded');
+                arrow.style.transform = '';
+            }
+        }
+
+        // Dynamically update Sidebar Progress panel, statistics, and navigable badges
+        function updateSidebarProgress() {
+            const badgesGrid = document.getElementById('sidebar-badges-grid');
+            const yearLabel = document.getElementById('sidebar-year-label');
+            if (!badgesGrid || !yearLabel) return;
+            
+            badgesGrid.innerHTML = '';
+            yearLabel.textContent = `${currentPracticeYear} 年度`;
+
+            // Filter question items for current practice scope
+            let practiceQs = fullQuestions.filter(q => q.year === currentPracticeYear);
+            if (currentPracticeCategory !== 'all') {
+                practiceQs = practiceQs.filter(q => q.type === currentPracticeCategory);
+            }
+            if (showOnlyFlagged) {
+                practiceQs = practiceQs.filter(q => flaggedQuestions[q.id]);
+            }
+            if (searchQuery) {
+                practiceQs = practiceQs.filter(q => {
+                    const textMatch = q.question.toLowerCase().includes(searchQuery);
+                    const codeMatch = q.code ? q.code.toLowerCase().includes(searchQuery) : false;
+                    const optionsMatch = q.options.some(opt => opt.toLowerCase().includes(searchQuery));
+                    return textMatch || codeMatch || optionsMatch;
+                });
+            }
+            
+            let correctCount = 0;
+            let wrongCount = 0;
+            let answeredCount = 0;
+
+            practiceQs.forEach(q => {
+                const history = practiceHistory[q.id] || { status: 'unread', attempts: [] };
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                dot.textContent = q.num;
+                dot.title = `點擊跳轉至第 ${q.num} 題`;
+
+                // Assign status styling classes
+                if (history.status === 'correct') {
+                    dot.classList.add('status-correct');
+                    correctCount++;
+                    answeredCount++;
+                } else if (history.status === 'wrong') {
+                    dot.classList.add('status-wrong');
+                    wrongCount++;
+                    answeredCount++;
+                } else if (history.status === 'corrected') {
+                    dot.classList.add('status-corrected');
+                    correctCount++; // Treat corrected as correct for completion rate
+                    answeredCount++;
+                } else {
+                    dot.classList.add('status-unread');
+                }
+
+                // Add navigation onclick handler
+                dot.onclick = () => {
+                    const card = document.querySelector(`[data-card-id="${q.id}"]`);
+                    if (card) {
+                        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Add a beautiful brief border flash micro-animation to indicate target question
+                        card.style.transition = 'outline 0.3s ease, border-color 0.3s ease';
+                        card.style.outline = '3px solid var(--primary-color)';
+                        setTimeout(() => {
+                            card.style.outline = 'none';
+                        }, 1000);
+                    }
+                };
+
+                badgesGrid.appendChild(dot);
+            });
+
+            // Update stats indicators
+            const totalCount = practiceQs.length;
+            const completionRate = totalCount > 0 ? Math.round((answeredCount / totalCount) * 100) : 0;
+            
+            document.getElementById('stat-progress').textContent = `${completionRate}%`;
+            document.getElementById('stat-correct').textContent = correctCount;
+            // The stat shows total wrong/corrected questions
+            // Let's count all questions in this scope that were ever wrong
+            let everWrongCount = practiceQs.filter(q => {
+                const h = practiceHistory[q.id];
+                return h && (h.status === 'wrong' || h.status === 'corrected' || (h.attempts && h.attempts.includes('wrong')));
+            }).length;
+            document.getElementById('stat-wrong').textContent = everWrongCount;
+            document.getElementById('stat-total').textContent = `${answeredCount}/${totalCount}`;
+        }
+
+        function toggleFlaggedFilter() {
+            showOnlyFlagged = !showOnlyFlagged;
+            const filterBtn = document.getElementById('filter-flagged-btn');
+            if (showOnlyFlagged) {
+                filterBtn.classList.add('active');
+            } else {
+                filterBtn.classList.remove('active');
+            }
+            renderPracticeQuestions();
+            updateSidebarProgress();
+        }
+
+        function handleSearch() {
+            searchQuery = document.getElementById('search-bar').value.trim().toLowerCase();
+            renderPracticeQuestions();
+            updateSidebarProgress();
+        }
+
+        // Flag handlers
+        function toggleFlag(qId, event) {
+            if (event) event.stopPropagation();
+            
+            if (flaggedQuestions[qId]) {
+                delete flaggedQuestions[qId];
+            } else {
+                flaggedQuestions[qId] = true;
+            }
+            localStorage.setItem('flagged_questions', JSON.stringify(flaggedQuestions));
+            
+            // Update DOM element classes
+            const cards = document.querySelectorAll(`[data-card-id="${qId}"]`);
+            cards.forEach(card => {
+                if (flaggedQuestions[qId]) {
+                    card.classList.add('flagged');
+                } else {
+                    card.classList.remove('flagged');
+                }
+            });
+
+            updateFlaggedCount();
+
+            // If we are showing only flagged, we might want to re-render to hide unflagged
+            if (showOnlyFlagged && currentView === 'practice') {
+                renderPracticeQuestions();
+            }
+        }
+
+        function updateFlaggedCount() {
+            const count = Object.keys(flaggedQuestions).length;
+            document.getElementById('flagged-count').textContent = count;
+        }
+
+        // Helper to shuffle arrays
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Render Practice Mode Questions list (Interactive options selection support)
+        function renderPracticeQuestions() {
+            const container = document.getElementById('practice-questions-list');
+            container.innerHTML = '';
+
+            let filtered = fullQuestions.filter(q => q.year === currentPracticeYear);
+
+            // Category filter
+            if (currentPracticeCategory !== 'all') {
+                filtered = filtered.filter(q => q.type === currentPracticeCategory);
+            }
+
+            // Flagged filter
+            if (showOnlyFlagged) {
+                filtered = filtered.filter(q => flaggedQuestions[q.id]);
+            }
+
+            // Search query filter
+            if (searchQuery) {
+                filtered = filtered.filter(q => {
+                    const textMatch = q.question.toLowerCase().includes(searchQuery);
+                    const codeMatch = q.code ? q.code.toLowerCase().includes(searchQuery) : false;
+                    const optionsMatch = q.options.some(opt => opt.toLowerCase().includes(searchQuery));
+                    return textMatch || codeMatch || optionsMatch;
+                });
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-results-placeholder">沒有找到符合篩選條件的題目。</div>';
+                return;
+            }
+
+            filtered.forEach(q => {
+                const isFlagged = flaggedQuestions[q.id] ? 'flagged' : '';
+                let codeHtml = '';
+                if (q.code) {
+                    codeHtml = `<pre><code>${escapeHtml(q.code)}</code></pre>`;
+                }
+
+                let diagramHtml = '';
+                if (q.html_diagram) {
+                    diagramHtml = `<div class="diagram-container">${q.html_diagram}</div>`;
+                }
+
+                // Render options as clickable buttons in Practice Mode too
+                const optionsHtml = q.options.map((opt, idx) => {
+                    const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                    return `
+                        <button class="option-button" id="opt-practice-btn-${q.id}-${letter}" onclick="selectPracticeOption('${q.id}', '${letter}', '${q.answer}')">
+                            <span class="option-letter">${letter}</span>
+                            <span>${escapeHtml(opt)}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                // Render collapsible detailed solution callout
+                let explanationHtml = '';
+                if (q.explanation) {
+                    explanationHtml = `
+                        <div class="explanation-section" id="explanation-${q.id}" style="display: none; background-color: var(--card-bg-secondary); border-left: 4px solid var(--primary-color); padding: 15px; margin-top: 15px; border-radius: 4px; font-size: 0.95rem;">
+                            <div style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; color: var(--primary-color);">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                                💡 題目詳解與邏輯分析
+                            </div>
+                            <div style="white-space: pre-line; color: var(--text-color); font-weight: 500;">${escapeHtml(q.explanation)}</div>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = `question-card ${isFlagged}`;
+                card.setAttribute('data-card-id', q.id);
+                card.innerHTML = `
+                    <div class="question-header">
+                        <button class="flag-btn" onclick="toggleFlag('${q.id}', event)" title="標記為易錯題">
+                            <svg class="flag-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+                        </button>
+                        <span class="question-num-badge">第 ${q.num} 題</span>
+                        <div class="question-text">
+                            ${escapeHtml(q.question)}
+                            <span class="easy-wrong-label">易錯題</span>
+                        </div>
+                    </div>
+                    ${codeHtml}
+                    ${diagramHtml}
+                    <div class="options-grid">
+                        ${optionsHtml}
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px; align-items: stretch; flex-wrap: wrap;">
+                        <div class="correct-answer-bar" style="flex-grow: 1; margin-top: 0; line-height: 24px;" id="answer-bar-${q.id}" title="滑鼠移入或反白此欄位以顯現答案">
+                            正確答案：${q.answer}
+                        </div>
+                        ${q.explanation ? `
+                            <button class="btn-secondary" style="padding: 10px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px;" onclick="toggleExplanation('${q.id}')">
+                                💡 觀看詳解
+                            </button>
+                        ` : ''}
+                        <button class="btn-secondary" style="padding: 10px 18px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px;" onclick="resetPracticeQuestion('${q.id}', '${q.answer}')" title="重置該題作答狀態">
+                            🔄 重新作答
+                        </button>
+                    </div>
+                    ${explanationHtml}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Click option in Practice Mode (gives instant feedback and reveals answer & explanation)
+        function selectPracticeOption(qId, selectedLetter, correctLetter) {
+            const card = document.querySelector(`[data-card-id="${qId}"]`);
+            const grid = card.querySelector('.options-grid');
+            
+            // Prevent further clicks by disabling handlers
+            grid.querySelectorAll('.option-button').forEach(btn => {
+                btn.classList.remove('correct', 'wrong', 'selected');
+                btn.onclick = null;
+                btn.style.cursor = 'default';
+            });
+            
+            // Initialize attempts array if not exists
+            if (!practiceHistory[qId]) {
+                practiceHistory[qId] = { status: 'unread', attempts: [] };
+            }
+            if (!practiceHistory[qId].attempts) {
+                practiceHistory[qId].attempts = [];
+            }
+            
+            // Apply visual classes
+            const selectedBtn = card.querySelector(`#opt-practice-btn-${qId}-${selectedLetter}`);
+            const isCorrect = selectedLetter === correctLetter;
+            
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+                
+                // If they previously answered wrong (either marked wrong or has 'wrong' in attempts history), update to corrected!
+                if (practiceHistory[qId].status === 'wrong' || practiceHistory[qId].attempts.includes('wrong')) {
+                    practiceHistory[qId].status = 'corrected';
+                } else {
+                    practiceHistory[qId].status = 'correct';
+                }
+                practiceHistory[qId].attempts.push('correct');
+            } else {
+                selectedBtn.classList.add('wrong');
+                const correctBtn = card.querySelector(`#opt-practice-btn-${qId}-${correctLetter}`);
+                correctBtn.classList.add('correct');
+                
+                practiceHistory[qId].status = 'wrong';
+                practiceHistory[qId].attempts.push('wrong');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('practice_history', JSON.stringify(practiceHistory));
+            
+            // Auto-reveal masked answer bar
+            const answerBar = card.querySelector(`#answer-bar-${qId}`);
+            answerBar.style.setProperty('color', '#198754', 'important');
+            answerBar.style.setProperty('background-color', '#ffffff', 'important');
+
+            // Auto-reveal detailed solution callout
+            const expSection = card.querySelector(`#explanation-${qId}`);
+            if (expSection) {
+                expSection.style.display = 'block';
+            }
+            
+            // Update sidebar indicators
+            updateSidebarProgress();
+        }
+
+        // Reset a practice question to its unselected, default interactive state
+        function resetPracticeQuestion(qId, correctLetter) {
+            const card = document.querySelector(`[data-card-id="${qId}"]`);
+            const grid = card.querySelector('.options-grid');
+            
+            // Re-enable and reset styles for all option buttons
+            grid.querySelectorAll('.option-button').forEach((btn, idx) => {
+                const letter = String.fromCharCode(65 + idx);
+                btn.classList.remove('correct', 'wrong', 'selected');
+                btn.style.cursor = 'pointer';
+                btn.onclick = () => selectPracticeOption(qId, letter, correctLetter);
+            });
+            
+            // Reset answer bar styles back to default CSS mask state
+            const answerBar = card.querySelector(`#answer-bar-${qId}`);
+            answerBar.style.removeProperty('color');
+            answerBar.style.removeProperty('background-color');
+
+            // Hide explanation section
+            const expSection = card.querySelector(`#explanation-${qId}`);
+            if (expSection) {
+                expSection.style.display = 'none';
+            }
+        }
+
+        // Toggle detailed solution display
+        function toggleExplanation(qId) {
+            const card = document.querySelector(`[data-card-id="${qId}"]`);
+            const expSection = card.querySelector(`#explanation-${qId}`);
+            if (expSection) {
+                const isHidden = expSection.style.display === 'none';
+                expSection.style.display = isHidden ? 'block' : 'none';
+            }
+        }
+
+        // Escaping HTML strings
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Annual Exam Setup Page render
+        function renderExamSetup() {
+            document.getElementById('exam-setup-view').style.display = 'block';
+            document.getElementById('exam-progress-view').style.display = 'none';
+            document.getElementById('exam-results-view').style.display = 'none';
+        }
+
+        function selectExamYear(year) {
+            examYear = year;
+            document.querySelectorAll('.exam-selection-card').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`exam-card-${year}`).classList.add('active');
+        }
+
+        // Start Annual Exam Mode
+        function startExam() {
+            examActive = true;
+            examUserAnswers = {};
+            examSeconds = 0;
+            examShuffleOptions = document.getElementById('exam-shuffle-options').checked;
+
+            // Gather questions of selected year
+            const yearQuestions = fullQuestions.filter(q => q.year === examYear);
+            
+            // Randomly sample 25 intelligence questions + 25 professional questions
+            const intelQs = shuffleArray(yearQuestions.filter(q => q.type === 'intelligence')).slice(0, 25);
+            const profQs = shuffleArray(yearQuestions.filter(q => q.type === 'professional')).slice(0, 25);
+            
+            // Merge and shuffle
+            examQuestions = shuffleArray([...intelQs, ...profQs]);
+
+            // Hide Setup Screen, Show Exam Sheet Screen
+            document.getElementById('exam-setup-view').style.display = 'none';
+            document.getElementById('exam-progress-view').style.display = 'block';
+            document.getElementById('exam-floating-status').style.display = 'flex';
+
+            renderExamQuestions();
+            updateExamStatusBar();
+
+            // Start Timer
+            clearInterval(examTimer);
+            examTimer = setInterval(() => {
+                examSeconds++;
+                document.getElementById('timer-display').textContent = formatTime(examSeconds);
+            }, 1000);
+        }
+
+        // Render Exam Sheet Cards
+        function renderExamQuestions() {
+            const container = document.getElementById('exam-questions-list');
+            container.innerHTML = '<h2>' + examYear + ' 年度全真模擬測驗</h2>';
+
+            examQuestions.forEach((q, cardIdx) => {
+                const isFlagged = flaggedQuestions[q.id] ? 'flagged' : '';
+                let codeHtml = '';
+                if (q.code) {
+                    codeHtml = `<pre><code>${escapeHtml(q.code)}</code></pre>`;
+                }
+
+                let diagramHtml = '';
+                if (q.html_diagram) {
+                    diagramHtml = `<div class="diagram-container">${q.html_diagram}</div>`;
+                }
+
+                // If option-shuffling is enabled, keep track of original positions to map answers correctly
+                let renderedOptions = q.options.map((opt, idx) => ({ text: opt, originalIdx: idx }));
+                if (examShuffleOptions) {
+                    renderedOptions = shuffleArray(renderedOptions);
+                }
+
+                const optionsHtml = renderedOptions.map((opt, optIdx) => {
+                    const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+                    const originalLetter = String.fromCharCode(65 + opt.originalIdx); // A, B, C, D
+                    
+                    return `
+                        <button class="option-button" id="opt-btn-${q.id}-${originalLetter}" onclick="selectOption(this, '${q.id}', '${originalLetter}')">
+                            <span class="option-letter">${letter}</span>
+                            <span>${escapeHtml(opt.text)}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                const card = document.createElement('div');
+                card.className = `question-card ${isFlagged}`;
+                card.setAttribute('data-card-id', q.id);
+                card.innerHTML = `
+                    <div class="question-header">
+                        <button class="flag-btn" onclick="toggleFlag('${q.id}', event)" title="標記為易錯題">
+                            <svg class="flag-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+                        </button>
+                        <span class="question-num-badge">第 ${cardIdx + 1} 題</span>
+                        <div class="question-text">
+                            ${escapeHtml(q.question)}
+                            <span class="easy-wrong-label">易錯題</span>
+                        </div>
+                    </div>
+                    ${codeHtml}
+                    ${diagramHtml}
+                    <div class="options-grid" id="options-grid-${q.id}">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Select option in simulated exams (uses dynamic this-binding to avoid DOM ID collisions)
+        function selectOption(btn, qId, originalLetter) {
+            // Find parent options grid container dynamically
+            const grid = btn.closest('.options-grid');
+            grid.querySelectorAll('.option-button').forEach(b => b.classList.remove('selected'));
+            
+            // Highlight the clicked option
+            btn.classList.add('selected');
+
+            // Record answer
+            examUserAnswers[qId] = originalLetter;
+
+            updateExamStatusBar();
+        }
+
+        function updateExamStatusBar() {
+            const answeredCount = Object.keys(examUserAnswers).length;
+            const totalCount = examQuestions.length;
+            document.getElementById('progress-answered').textContent = answeredCount;
+            document.getElementById('progress-total').textContent = totalCount;
+        }
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        // Submit simulated exam & show results with complete explanation support
+        function submitExam() {
+            const unanswered = examQuestions.length - Object.keys(examUserAnswers).length;
+            if (unanswered > 0 && !confirm(`您還有 ${unanswered} 題尚未回答，是否確認提前交卷並評分？`)) {
+                return;
+            }
+
+            // Stop timer
+            clearInterval(examTimer);
+            document.getElementById('exam-floating-status').style.display = 'none';
+
+            // Calculate Score
+            let correctCount = 0;
+
+            examQuestions.forEach(q => {
+                const userAns = examUserAnswers[q.id];
+                if (userAns === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            const score = correctCount * 2; // Each question is worth 2 points
+            
+            // Render results page
+            const resultsView = document.getElementById('overallActive' === 'overall' ? 'overall-results-view' : (currentView === 'overall' ? 'overall-results-view' : 'exam-results-view'));
+            
+            resultsView.innerHTML = `
+                <div class="results-container">
+                    <h2 style="font-family:var(--title-font); font-weight:700;">模擬考成績報告</h2>
+                    <div class="results-score-circle" style="border-color: ${score >= 60 ? '#198754' : '#dc3545'};">
+                        <span class="score-val">${score}</span>
+                        <span class="score-lbl">得分 (滿分 100)</span>
+                    </div>
+                    <div class="results-details">
+                        <div class="detail-item">
+                            <h4>總計題數</h4>
+                            <p>${examQuestions.length}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>答對題數</h4>
+                            <p style="color:#198754;">${correctCount}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>答錯題數</h4>
+                            <p style="color:#dc3545;">${examQuestions.length - correctCount}</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>測驗耗時</h4>
+                            <p>${formatTime(examSeconds)}</p>
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button class="start-exam-btn" style="background-color: ${currentView === 'overall' ? 'var(--orange-flag)' : 'var(--primary-color)'};" onclick="${currentView === 'overall' ? 'startOverallExam()' : 'startExam()'}">再考一次</button>
+                        <button class="btn-secondary" onclick="switchView('${currentView}')">返回選單</button>
+                    </div>
+                </div>
+
+                <div class="main-container" style="margin-top:40px;">
+                    <h3 style="font-size:1.4rem; font-weight:700; margin-bottom:20px; border-left:4px solid var(--primary-color); padding-left:12px;">試卷完整解析與錯題回顧</h3>
+                    <div class="questions-list" id="exam-review-list"></div>
+                </div>
+            `;
+
+            // Display reviews with collapsible solution drawer
+            const reviewContainer = resultsView.querySelector('#exam-review-list');
+            examQuestions.forEach((q, cardIdx) => {
+                const userAns = examUserAnswers[q.id];
+                const isCorrect = userAns === q.answer;
+                const isFlagged = flaggedQuestions[q.id] ? 'flagged' : '';
+                
+                let codeHtml = '';
+                if (q.code) {
+                    codeHtml = `<pre><code>${escapeHtml(q.code)}</code></pre>`;
+                }
+
+                let diagramHtml = '';
+                if (q.html_diagram) {
+                    diagramHtml = `<div class="diagram-container">${q.html_diagram}</div>`;
+                }
+
+                const optionsHtml = q.options.map((opt, idx) => {
+                    const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                    
+                    let statusClass = '';
+                    if (letter === q.answer) {
+                        statusClass = 'correct';
+                    } else if (letter === userAns) {
+                        statusClass = 'wrong';
+                    }
+
+                    return `
+                        <div class="option-button ${statusClass}">
+                            <span class="option-letter">${letter}</span>
+                            <span>${escapeHtml(opt)}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                let explanationHtml = '';
+                if (q.explanation) {
+                    explanationHtml = `
+                        <div class="explanation-section" id="review-explanation-${q.id}" style="display: block; background-color: var(--card-bg-secondary); border-left: 4px solid var(--primary-color); padding: 15px; margin-top: 15px; border-radius: 4px; font-size: 0.95rem;">
+                            <div style="font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; color: var(--primary-color);">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" class="icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                                💡 題目詳解與邏輯分析
+                            </div>
+                            <div style="white-space: pre-line; color: var(--text-color); font-weight: 500;">${escapeHtml(q.explanation)}</div>
+                        </div>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = `question-card ${isFlagged}`;
+                card.setAttribute('data-card-id', q.id);
+                card.style.borderColor = isCorrect ? '#198754' : '#dc3545';
+                
+                card.innerHTML = `
+                    <div class="question-header">
+                        <button class="flag-btn" onclick="toggleFlag('${q.id}', event)" title="標記為易錯題">
+                            <svg class="flag-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+                        </button>
+                        <span class="question-num-badge">第 ${cardIdx + 1} 題 (${q.year}年)</span>
+                        <div class="question-text">
+                            ${escapeHtml(q.question)}
+                            <span class="easy-wrong-label">易錯題</span>
+                            <span style="display:inline-block; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:4px; margin-left:8px; background-color:${isCorrect ? 'rgba(25,135,84,0.15)' : 'rgba(220,53,69,0.15)'}; color:${isCorrect ? '#198754' : '#dc3545'};">
+                                ${isCorrect ? '答對' : '答錯'}
+                            </span>
+                        </div>
+                    </div>
+                    ${codeHtml}
+                    ${diagramHtml}
+                    <div class="options-grid">
+                        ${optionsHtml}
+                    </div>
+                    <div style="background-color:var(--card-bg-secondary); padding:10px 15px; border-radius:6px; font-weight:600; font-size:0.9rem; margin-top:10px; border-left:4px solid ${isCorrect ? '#198754' : '#dc3545'};">
+                        您的答案：${userAns || '未作答'} | 正確答案：<span style="color:#198754;">${q.answer}</span>
+                    </div>
+                    ${explanationHtml}
+                `;
+                reviewContainer.appendChild(card);
+            });
+
+            document.getElementById(currentView === 'overall' ? 'overall-progress-view' : 'exam-progress-view').style.display = 'none';
+            resultsView.style.display = 'block';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Reset Annual Exam variables
+        function resetExamSession() {
+            examActive = false;
+            clearInterval(examTimer);
+            document.getElementById('exam-floating-status').style.display = 'none';
+        }
+
+        // ==================== OVERALL MOCK EXAM (總模擬考) ====================
+        function renderOverallSetup() {
+            document.getElementById('overall-setup-view').style.display = 'block';
+            document.getElementById('overall-progress-view').style.display = 'none';
+            document.getElementById('overall-results-view').style.display = 'none';
+        }
+
+        // Start Overall Exam Mode
+        function startOverallExam() {
+            overallActive = true;
+            examUserAnswers = {}; // We will reuse the answers map
+            examSeconds = 0; // We will reuse the timer variables
+            examShuffleOptions = document.getElementById('overall-shuffle-options').checked;
+
+            // Gather mixed questions from 113, 114, 115
+            // Sample 25 mixed intelligence + 25 mixed professional
+            const intelQs = shuffleArray(fullQuestions.filter(q => q.type === 'intelligence')).slice(0, 25);
+            const profQs = shuffleArray(fullQuestions.filter(q => q.type === 'professional')).slice(0, 25);
+            
+            // Merge and shuffle
+            examQuestions = shuffleArray([...intelQs, ...profQs]);
+
+            // Hide Setup Screen, Show Exam Sheet Screen
+            document.getElementById('overall-setup-view').style.display = 'none';
+            document.getElementById('overall-progress-view').style.display = 'block';
+            document.getElementById('exam-floating-status').style.display = 'flex';
+
+            renderOverallQuestions();
+            updateExamStatusBar();
+
+            // Start Timer
+            clearInterval(examTimer);
+            examTimer = setInterval(() => {
+                examSeconds++;
+                document.getElementById('timer-display').textContent = formatTime(examSeconds);
+            }, 1000);
+        }
+
+        // Render Overall Exam Sheet Cards
+        function renderOverallQuestions() {
+            const container = document.getElementById('overall-questions-list');
+            container.innerHTML = '<h2 style="color: var(--orange-flag);">幼獅考古題總模擬測驗 (113-115年混合)</h2>';
+
+            examQuestions.forEach((q, cardIdx) => {
+                const isFlagged = flaggedQuestions[q.id] ? 'flagged' : '';
+                let codeHtml = '';
+                if (q.code) {
+                    codeHtml = `<pre><code>${escapeHtml(q.code)}</code></pre>`;
+                }
+
+                let diagramHtml = '';
+                if (q.html_diagram) {
+                    diagramHtml = `<div class="diagram-container">${q.html_diagram}</div>`;
+                }
+
+                // If option-shuffling is enabled, keep track of original positions to map answers correctly
+                let renderedOptions = q.options.map((opt, idx) => ({ text: opt, originalIdx: idx }));
+                if (examShuffleOptions) {
+                    renderedOptions = shuffleArray(renderedOptions);
+                }
+
+                const optionsHtml = renderedOptions.map((opt, optIdx) => {
+                    const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+                    const originalLetter = String.fromCharCode(65 + opt.originalIdx); // A, B, C, D
+                    
+                    return `
+                        <button class="option-button" id="opt-btn-${q.id}-${originalLetter}" onclick="selectOption(this, '${q.id}', '${originalLetter}')">
+                            <span class="option-letter">${letter}</span>
+                            <span>${escapeHtml(opt.text)}</span>
+                        </button>
+                    `;
+                }).join('');
+
+                const card = document.createElement('div');
+                card.className = `question-card ${isFlagged}`;
+                card.setAttribute('data-card-id', q.id);
+                card.innerHTML = `
+                    <div class="question-header">
+                        <button class="flag-btn" onclick="toggleFlag('${q.id}', event)" title="標記為易錯題">
+                            <svg class="flag-icon" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+                        </button>
+                        <span class="question-num-badge">第 ${cardIdx + 1} 題 (${q.year}年)</span>
+                        <div class="question-text">
+                            ${escapeHtml(q.question)}
+                            <span class="easy-wrong-label">易錯題</span>
+                        </div>
+                    </div>
+                    ${codeHtml}
+                    ${diagramHtml}
+                    <div class="options-grid" id="options-grid-${q.id}">
+                        ${optionsHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Reset Overall Exam variables
+        function resetOverallExamSession() {
+            overallActive = false;
+            clearInterval(examTimer);
+            document.getElementById('exam-floating-status').style.display = 'none';
+        }
+
+        // On Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Restore theme preferences
+            const savedTheme = localStorage.getItem('review_system_theme') || 'light';
+            setTheme(savedTheme);
+
+            updateFlaggedCount();
+            renderPracticeQuestions();
+            updateSidebarProgress(); // Initialize sidebar progress indicators
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# AI Agent Configuration
+.antigravitycli/
+.gemini/
+brain/
+
+# Local backup files (Git handles version history, local backups can stay untracked)
+backups/
+*.bak
+
+# System temporary files
+.DS_Store
+Thumbs.db
+desktop.ini
